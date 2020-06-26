@@ -34,7 +34,7 @@ Good candidates for "add ons" in a cluster blueprint are things that are meant t
 
 ### Addon creation using a declrataive spec
 
-[ Instructions on how to create an addon using a declartive spec can be found here ](addons/README.md)
+[ Instructions on how to create an addon using a declartive spec can be found here ](addon/README.md)
 
 
 ---
@@ -45,7 +45,7 @@ Users can assemble and configure a list of "software add ons" as part of a custo
 
 ### Cluter Blueprint creation using a declrataive spec
 
-[ Instructions on how to create a cluster blueprint using a declartive spec can be found here ](blueprints/README.md)
+[ Instructions on how to create a cluster blueprint using a declartive spec can be found here ](blueprint/README.md)
 
 ---
 ## Clusters

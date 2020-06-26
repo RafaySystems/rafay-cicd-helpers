@@ -1,0 +1,66 @@
+---
+# Type of k8s Distribution: AmazonEKS
+kind: AmazonEKS
+general:
+  # Name of Cluster in Rafay Controller
+  name: eks1
+  # AWS Region where cluster needs to be provisioned
+  region: us-east-1
+  # Supported Kubernetes Version for EKS
+  k8sVersion: 1.15
+  # Name of Rafay Cloud Credentials (can be based on IAM User or Role)
+  credentials: eks-role-testing
+  # Name of blueprint to be used
+  blueprint: default
+  # Name of project where cluster has to be provisioned
+  project: testing
+controlPlane:
+  # Specify the AZs where the EKS Master will be provisioned
+  availabilityZones: []
+networking:
+  # If false, will create new VPCs and Subnets
+  useExistingVpc: false
+  vpc:
+    # NAT Gateway: HighlyAvailable, Disable, Single (default)
+    nat:
+      gateway: "Single"
+    cidr: "192.168.0.0/16"
+    subnets:
+    # must provide 'private' and/or 'public' subnets by availibility zone as shown
+      private:
+      public:
+# Worker Nodes Nodegroup details. Can have multiple nodegroups
+nodeGroups:
+    name: first-ng
+    managed: false
+    # AZ where the nodegroup's worker nodes will be provisioned
+    availabilityZones: []
+    privateNetworking: false
+    # EC2 Instance Type
+    instanceType: m5.xlarge
+    # Number of Worker Nodes and ASG Details
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+    # Storage for Worker Nodes
+    volumeSize: 100
+    volumeType: gp2
+    # AMI Details
+    ami:
+    amiFamily:
+    # SSH Key Details
+    ssh:
+      publicKeyName:
+    securityGroups: []
+# AWS IAM automation
+iam:
+  withAddonPolicies:
+    albIngress: false
+    autoScalegroup: true
+    route53: false
+    appmesh: false
+    ecr: true
+
+
+
+

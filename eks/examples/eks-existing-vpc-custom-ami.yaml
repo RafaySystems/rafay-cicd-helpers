@@ -1,0 +1,76 @@
+---
+# Type of k8s Distribution: AmazonEKS
+kind: AmazonEKS
+general:
+  # Name of Cluster in Rafay Controller
+  name: test-21-cluster
+  # AWS Region where cluster needs to be provisioned
+  region: us-east-1
+  # Supported Kubernetes Version for EKS
+  k8sVersion: 1.15
+  # Name of Rafay Cloud Credentials (can be based on IAM User or Role)
+  credentials: aws-dev
+  # Name of blueprint to be used
+  blueprint: default
+  # Name of project where cluster has to be provisioned
+  project: defaultproject
+controlPlane:
+  # Specify the AZs where the EKS Master will be provisioned
+  availabilityZones: []
+
+networking:
+  # If false, will create new VPCs and Subnets
+  useExistingVpc: true
+  vpc:
+    # NAT Gateway: HighlyAvailable, Disable, Single (default)
+    nat:
+      gateway: "Single"
+    cidr: "192.168.0.0/16"
+
+    subnets:
+    # must provide 'private' and/or 'public' subnets by availibility zone as shown
+      private:
+          us-east-1a:
+             id: "subnet-0bb5a18a26b258"
+          us-east-1c:
+             id: "subnet-0850daa6ffe80e"
+      public:
+          us-east-1a:
+             id: "subnet-0ce7594bbb0301"
+          us-east-1c:
+             id: "subnet-0272f3488a14722"
+# Worker Nodes Nodegroup details. Can have multiple nodegroups
+nodeGroups:
+    name: nodegroup-1
+    managed: false
+    # AZ where the nodegroup's worker nodes will be provisioned
+    availabilityZones: []
+
+    privateNetworking: false
+
+    # EC2 Instance Type
+    instanceType: m5.xlarge
+    # Number of Worker Nodes and ASG Details
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 1
+
+    # Storage for Worker Nodes
+    volumeSize: 100
+    volumeType: gp2
+    # AMI Details
+    ami: ami-1956733309
+    amiFamily:
+    # SSH Key Details
+    ssh:
+      publicKeyName:
+    securityGroups: []
+
+# AWS IAM automation
+iam:
+  withAddonPolicies:
+    albIngress: false
+    autoScalegroup: true
+    route53: false
+    appmesh: false
+    ecr: true

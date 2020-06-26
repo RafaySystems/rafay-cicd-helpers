@@ -1,0 +1,6 @@
+---
+name: km-istio-cert-manager
+addons: ["istio","cert-manager"]
+rafay_ingress: false
+project: defaultproject
+version: v1

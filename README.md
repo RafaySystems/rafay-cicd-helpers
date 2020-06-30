@@ -3,8 +3,8 @@
 
 In addition to using the Rafay Console to
 - configure and provision clusters
-- configure addons
-- configure blueprints
+- create, configure and manage cluster addons
+- create, configure and manage cluster blueprints
 
 you can also use REST APIs to programmatically interact with the Rafay Controller.
 

@@ -240,7 +240,7 @@ do
     fi
 done
 
-providers=`curl -k -s -H "x-rafay-partner: rx28oml" -H "content-type: application/json;charset=UTF-8" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/providers/ | jq '.results[]|.name,.ID' |cut -d'"' -f2`
+providers=`curl -k -s -H "x-rafay-partner: rx28oml" -H "content-type: application/json;charset=UTF-8" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/providers/?limit=100 | jq '.results[]|.name,.ID' |cut -d'"' -f2`
 
 
 PROVIDERS_ARRAY=( $providers )

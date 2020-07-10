@@ -20,5 +20,14 @@ Sample declarative specs for imported cluster configurations are available [here
 
 ### Imported cluster creation
 
+To apply the bootstrap file onto the cluster
+
+```scripts/rafay_imported_cluster.sh -u jonh.doe@example.com -p P@ssword -f examples/imported_cluster.yaml -a```
+
+To apply the bootstrap file offline onto the cluster
+
 ```scripts/rafay_imported_cluster.sh -u jonh.doe@example.com -p P@ssword -f examples/imported_cluster.yaml```
 
+### Jenkins Pipeline Groovy script
+
+An example jenkins pipeline groovy script can be found [here](../imported/Jenkins)

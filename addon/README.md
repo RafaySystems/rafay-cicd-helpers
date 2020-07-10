@@ -22,3 +22,6 @@ Sample declarative specs for creating addon are available [here](../addon/exampl
 
 ```scripts/rafay_addon.sh -u jonh.doe@example.com -p P@ssword -f examples/cert-manager-spec.yaml```
 
+### Jenkins Pipeline Groovy script
+
+An example jenkins pipeline groovy script can be found [here](../addon/Jenkins)

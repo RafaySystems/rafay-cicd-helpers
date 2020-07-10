@@ -20,3 +20,7 @@ Sample declarative specs for creating blueprint are available [here](../blueprin
 ### Blueprint creation
 
 ```scripts/rafay_blueprint.sh -u jonh.doe@example.com -p P@ssword -f examples/blueprint-spec.yaml```
+
+### Jenkins Pipeline Groovy script
+
+An example jenkins pipeline groovy script can be found [here](../blueprint/Jenkins)

@@ -1,0 +1,27 @@
+#!/usr/bin/env groovy
+
+pipeline {
+  agent any
+  environment {
+      RAFAY_USERNAME=credentials('Rafay_Username')
+      RAFAY_PASSWORD=credentials('Rafay_Password')
+  }
+  stages {
+    stage("Checkout Repo") {
+      steps {
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RafaySystems/rafay-cicd-helpers']]])
+
+      }
+    }
+    
+    stage("Cluster Provision") {
+        steps {
+            sh label: '', script: '''
+            cd eks/scripts
+            chmod +x rafay_eks_cluster.sh
+            ./rafay_eks_cluster.sh -u $RAFAY_USERNAME -p $RAFAY_PASSWORD -f ../examples/eks-new-vpc.yaml
+            '''
+        }
+    }
+  }
+}

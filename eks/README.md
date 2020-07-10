@@ -64,3 +64,6 @@ Sample declarative specs for a variety of cluster configurations are available [
 
 ```scripts/rafay_eks_provision.sh -u jonh.doe@example.com -p P@ssword -f examples/eks-existing-vpc-custom-ami.yaml```
 
+### Jenkins Pipeline Groovy script
+
+An example jenkins pipeline groovy script can be found [here](../eks/Jenkins)

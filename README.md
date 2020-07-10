@@ -78,7 +78,7 @@ The lifecycle management (add/remove worker nodes, decommission etc) of an "impo
 
 ### Rafay MKS cluster creation on AWS using EC2 instances
 
-[ Instructions on how to create a Rafay MKS cluster using a declartive spec can be found here ](mks/README.md)
+[ Instructions on how to create a Rafay MKS cluster using a declartive spec can be found here ](mks-ec2/README.md)
 
 
 ---

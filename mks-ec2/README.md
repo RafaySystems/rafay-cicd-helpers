@@ -8,7 +8,7 @@
 ---
 ### MKS Cluster Provision
 
-Sample declarative specs for a variety of cluster configurations are available [here](../mks/examples)
+Sample declarative specs for a variety of cluster configurations are available [here](../mks-ec2/examples)
 
 ### Parameters that needs to be specified in the spec file
 
@@ -33,3 +33,7 @@ Sample declarative specs for a variety of cluster configurations are available [
 ### Rafay MKS HA cluster creation with GPU on AWS EC2
 
 ```scripts/rafay_mks_cluster.sh -u jonh.doe@example.com -p P@ssword -f examples/mks-ha-with-gpu.yaml```
+
+### Jenkins Pipeline Groovy script
+
+An example jenkins pipeline groovy script can be found [here](../mks-ec2/Jenkins)

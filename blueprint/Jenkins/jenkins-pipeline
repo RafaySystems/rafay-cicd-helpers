@@ -14,7 +14,7 @@ pipeline {
       }
     }
     
-    stage("Cluster Provision") {
+    stage("Blueprint Creation") {
         steps {
             sh label: '', script: '''
             cd blueprint/scripts

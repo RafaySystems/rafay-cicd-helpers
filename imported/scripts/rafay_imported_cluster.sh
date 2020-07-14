@@ -47,21 +47,48 @@ done
 
 if [[ "$OSTYPE" == "linux-gnu"* ]];
 then
-    #Install jq if not installed
-    JQ_PKG_OK=$(dpkg-query -W --showformat='${Status}\n' jq|grep "install ok installed")
-    echo Checking for jq package: $JQ_PKG_OK
-    if [ "" == "$JQ_PKG_OK" ]; then
-        echo "jq package not installed. Installing jq..."
-        sudo apt-get -y install jq
-    fi
+    hostnamectl > /tmp/os
+    grep -i ubuntu /tmp/os > /dev/null 2>&1
+    if [ $? -eq 0 ];
+    then
+        #Install jq if not installed
+        JQ_PKG_OK=$(dpkg-query -W --showformat='${Status}\n' jq|grep "install ok installed")
+        echo Checking for jq package: $JQ_PKG_OK
+        if [ "" == "$JQ_PKG_OK" ]; then
+            echo "jq package not installed. Installing jq..."
+            sudo apt-get -y update > /dev/null
+            sudo apt-get -y install jq
+        fi
 
-    #Install curl if not installed
-    CURL_PKG_OK=$(dpkg-query -W --showformat='${Status}\n' curl|grep "install ok installed")
-    echo Checking for curl package: $CURL_PKG_OK
-    if [ "" == "$CURL_PKG_OK" ]; then
-        echo "curl package not installed. Installing curl..."
-        sudo apt-get -y install curl
+        #Install curl if not installed
+        CURL_PKG_OK=$(dpkg-query -W --showformat='${Status}\n' curl|grep "install ok installed")
+        echo Checking for curl package: $CURL_PKG_OK
+        if [ "" == "$CURL_PKG_OK" ]; then
+            echo "curl package not installed. Installing curl..."
+            sudo apt-get -y update > /dev/null
+            sudo apt-get -y install curl
+        fi
     fi
+    grep -i centos /tmp/os > /dev/null 2>&1
+    if [ $? -eq 0 ];
+    then
+        #Install jq if not installed
+        IS_JQ_INSTALLED=$(rpm -q jq)
+        if [ "$IS_JQ_INSTALLED" == "package jq is not installed" ];
+        then
+            echo "jq package not installed. Installing jq..."
+            sudo yum install -y epel-release
+            sudo yum install -y jq
+        fi
+        #Install curl if not installed
+        IS_CURL_INSTALLED=$(rpm -q curl)
+        if [ "$IS_CURL_INSTALLED" == "package curl is not installed" ];
+        then
+            echo "curl package not installed. Installing curl..."
+            sudo yum install -y curl
+        fi
+    fi
+    rm /tmp/os
 elif [[ "$OSTYPE" == "darwin"* ]];
 then
     if !(which jq > /dev/null 2>&1);
@@ -73,7 +100,6 @@ then
         echo "curl installation not found, please install curl !! Exiting" && exit -1
     fi
 fi
-
 
 if which python > /dev/null 2>&1;
 then

@@ -83,7 +83,6 @@ then
             sudo yum install -y curl
         fi
     fi
-    rm /tmp/os
 elif [[ "$OSTYPE" == "darwin"* ]];
 then
     if !(which jq > /dev/null 2>&1);
@@ -172,10 +171,22 @@ then
     echo -e " !! Could not find the namespace with the name $ADDON_NAMESPACE, creating now !!"
     namespace_data='{"name":"'"${ADDON_NAMESPACE}"'","description":"","project_id":"'"${PROJECT_ID}"'"}'
     curl -k -vvvvv -d ${namespace_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/config/v1/projects/${PROJECT_ID}/namespaces/ -o /tmp/rafay_namespace > /tmp/$$_curl 2>&1
-    grep 'HTTP/2 201'  /tmp/$$_curl > /dev/null 2>&1
-    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_namespace` && echo -e " !! Detected failure adding namespace ${ADDON_NAMESPACE} ${DBG}!! Exiting  " && exit -1
-    rm /tmp/$$_curl
-    echo "[+] Successfully added namespace ${ADDON_NAMESPACE}"
+    grep -i ubuntu /tmp/os > /dev/null 2>&1
+    if [ $? -eq 0 ];
+    then
+        grep 'HTTP/2 201'  /tmp/$$_curl > /dev/null 2>&1
+        [ $? -ne 0 ] && DBG=`cat /tmp/rafay_namespace` && echo -e " !! Detected failure adding namespace ${ADDON_NAMESPACE} ${DBG}!! Exiting  " && exit -1
+        rm /tmp/$$_curl
+        echo "[+] Successfully added namespace ${ADDON_NAMESPACE}"
+    fi
+    grep -i centos /tmp/os > /dev/null 2>&1
+    if [ $? -eq 0 ];
+    then
+        grep 'HTTP/1.1 201'  /tmp/$$_curl > /dev/null 2>&1
+        [ $? -ne 0 ] && DBG=`cat /tmp/rafay_namespace` && echo -e " !! Detected failure adding namespace ${ADDON_NAMESPACE} ${DBG}!! Exiting  " && exit -1
+        rm /tmp/$$_curl
+        echo "[+] Successfully added namespace ${ADDON_NAMESPACE}"
+    fi
 fi
 
 
@@ -183,10 +194,22 @@ addon_data='{"name":"'"${ADDON_NAME}"'","namespace":"'"${ADDON_NAMESPACE}"'","ty
 
 
 curl -k -vvvvv -d ${addon_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/config/v1/projects/${PROJECT_ID}/systemworkloads/ -o /tmp/rafay_addon > /tmp/$$_curl 2>&1
-grep 'HTTP/2 201'  /tmp/$$_curl > /dev/null 2>&1
-[ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon` && echo -e " !! Detected failure adding addon ${addon_data} ${DBG}!! Exiting  " && exit -1
-rm /tmp/$$_curl
-echo "[+] Successfully added addon ${addon_data}"
+grep -i ubuntu /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/2 201'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon` && echo -e " !! Detected failure adding addon ${addon_data} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+    echo "[+] Successfully added addon ${addon_data}"
+fi
+grep -i centos /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/1.1 201'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon` && echo -e " !! Detected failure adding addon ${addon_data} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+    echo "[+] Successfully added addon ${addon_data}"
+fi
 UPLOAD_LINK=`cat /tmp/rafay_addon |jq '.upload_link'|cut -d'"' -f2`
 if [ $ADDON_TYPE == "Helm" ];
 then
@@ -196,25 +219,62 @@ ADDON_ID=`cat /tmp/rafay_addon |jq '.id'|cut -d'"' -f2`
 rm /tmp/rafay_addon
 
 curl -k -vvvvv -F payload="@$ADDON_FILENAME" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/${UPLOAD_LINK} -o /tmp/rafay_addon_payload > /tmp/$$_curl 2>&1
-grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
-[ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_payload` && echo -e " !! Detected failure uploading ${ADDON_FILENAME} ${DBG}!! Exiting  " && exit -1
-rm /tmp/$$_curl
-rm /tmp/rafay_addon_payload
+grep -i ubuntu /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_payload` && echo -e " !! Detected failure uploading ${ADDON_FILENAME} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+    rm /tmp/rafay_addon_payload
+fi
+grep -i centos /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/1.1 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_payload` && echo -e " !! Detected failure uploading ${ADDON_FILENAME} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+    rm /tmp/rafay_addon_payload
+fi
 
 if [ $ADDON_TYPE == "Helm" ];
 then
     curl -k -vvvvv -F values="@$ADDON_VAULES" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/${UPLOAD_VALUES_LINK} -o /tmp/rafay_addon_values > /tmp/$$_curl 2>&1
-    grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
-    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_values` && echo -e " !! Detected failure uploading ${ADDON_VAULES} ${DBG}!! Exiting  " && exit -1
-    rm /tmp/$$_curl
-    rm /tmp/rafay_addon_values
+    grep -i ubuntu /tmp/os > /dev/null 2>&1
+    if [ $? -eq 0 ];
+    then
+        grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
+        [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_values` && echo -e " !! Detected failure uploading ${ADDON_VAULES} ${DBG}!! Exiting  " && exit -1
+        rm /tmp/$$_curl
+        rm /tmp/rafay_addon_values
+     fi
+    grep -i centos /tmp/os > /dev/null 2>&1
+    if [ $? -eq 0 ];
+    then
+        grep 'HTTP/1.1 200'  /tmp/$$_curl > /dev/null 2>&1
+        [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_values` && echo -e " !! Detected failure uploading ${ADDON_VAULES} ${DBG}!! Exiting  " && exit -1
+        rm /tmp/$$_curl
+        rm /tmp/rafay_addon_values
+    fi
 fi
 
 addon_version_data='{"version":"'"${ADDON_VERSION}"'"}'
 curl -k -vvvvv -d ${addon_version_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/config/v1/projects/${PROJECT_ID}/systemworkloads/${ADDON_ID}/publish/ -o /tmp/rafay_addon_publish > /tmp/$$_curl 2>&1
-grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
-[ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_publish` && echo -e " !! Detected failure publishing addon ${ADDON_NAME} ${DBG}!! Exiting  " && exit -1
-rm /tmp/$$_curl
-rm /tmp/rafay_addon_publish
+grep -i ubuntu /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_publish` && echo -e " !! Detected failure publishing addon ${ADDON_NAME} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+    rm /tmp/rafay_addon_publish
+fi
+grep -i centos /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/1.1 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_addon_publish` && echo -e " !! Detected failure publishing addon ${ADDON_NAME} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+    rm /tmp/rafay_addon_publish
+fi
+rm /tmp/os
 echo "[+] Successfully published addon ${ADDON_NAME}"
 

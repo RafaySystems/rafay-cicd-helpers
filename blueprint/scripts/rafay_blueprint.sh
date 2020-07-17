@@ -82,7 +82,6 @@ then
             sudo yum install -y curl
         fi
     fi
-    rm /tmp/os
 elif [[ "$OSTYPE" == "darwin"* ]];
 then
     if !(which jq > /dev/null 2>&1);
@@ -190,16 +189,42 @@ fi
 blueprint_data='{"metadata":{"name":"'"${BLUEPRINT_NAME}"'"},"spec":{"excludedSystemComponents":['${EXCLUDED_COMPONENTS}'],"customComponents":['${CUSTOM_COMPONENTS}']}}'
 
 curl -k -vvvvv -d ${blueprint_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/v2/config/project/${PROJECT_ID}/blueprint -o /tmp/rafay_blueprint > /tmp/$$_curl 2>&1
-grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
-[ $? -ne 0 ] && DBG=`cat /tmp/rafay_blueprint` && echo -e " !! Detected failure adding blueprint ${blueprint_data} ${DBG}!! Exiting  " && exit -1
-rm /tmp/$$_curl
+grep -i ubuntu /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_blueprint` && echo -e " !! Detected failure adding blueprint ${blueprint_data} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+fi
+grep -i centos /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/1.1 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_blueprint` && echo -e " !! Detected failure adding blueprint ${blueprint_data} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+fi
+
 echo "[+] Successfully added blueprint ${blueprint_data}"
 
 blueprint_version_data='{"snapshotDisplayName":"'"${BLUEPRINT_VERSION}"'"}'
 curl -k -vvvvv -d ${blueprint_version_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/v2/config/project/${PROJECT_ID}/blueprint/${BLUEPRINT_NAME}/publish -o /tmp/rafay_blueprint_publish > /tmp/$$_curl 2>&1
-grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
-[ $? -ne 0 ] && DBG=`cat /tmp/rafay_blueprint_publish` && echo -e " !! Detected failure publishing blueprint ${BLUEPRINT_NAME} ${DBG}!! Exiting  " && exit -1
-rm /tmp/$$_curl
-rm /tmp/rafay_blueprint_publish
+grep -i ubuntu /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_blueprint_publish` && echo -e " !! Detected failure publishing blueprint ${BLUEPRINT_NAME} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+    rm /tmp/rafay_blueprint_publish
+fi
+grep -i centos /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/1.1 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_blueprint_publish` && echo -e " !! Detected failure publishing blueprint ${BLUEPRINT_NAME} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+    rm /tmp/rafay_blueprint_publish
+fi
+rm /tmp/os
+
 echo "[+] Successfully published blueprint ${BLUEPRINT_NAME}"
 

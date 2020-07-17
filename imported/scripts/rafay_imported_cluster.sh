@@ -88,7 +88,6 @@ then
             sudo yum install -y curl
         fi
     fi
-    rm /tmp/os
 elif [[ "$OSTYPE" == "darwin"* ]];
 then
     if !(which jq > /dev/null 2>&1);
@@ -133,9 +132,22 @@ rsid=`grep -inr "set-cookie: rsid" /tmp/$$_curl |  cut -d'=' -f2 | cut -d';' -f1
 rm /tmp/$$_curl
 
 curl -k -vvvvv -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/metros/ -o /tmp/rafay_locations > /tmp/$$_curl 2>&1
-grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
-[ $? -ne 0 ] && DBG=`cat /tmp/rafay_locations` && echo -e " !! Failure in  getting locations ${DBG}!! Exiting  " && exit -1
-rm /tmp/$$_curl
+
+grep -i ubuntu /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_locations` && echo -e " !! Failure in  getting locations ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+fi
+grep -i centos /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/1.1 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_locations` && echo -e " !! Failure in  getting locations ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+fi
+
 METROS=`cat /tmp/rafay_locations |jq '.results[] | .name'|cut -d'"' -f2`
 rm /tmp/rafay_locations
 METROS_ARRAY=( $METROS )
@@ -175,9 +187,21 @@ cluster_data='{"name":"'"${CLUSTER_NAME}"'","ha_enabled":false,"gpu_enabled":fal
 
 
 curl -k -vvvvv -d ${cluster_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/edges/ -o /tmp/rafay_edge > /tmp/$$_curl 2>&1
-grep 'HTTP/2 201'  /tmp/$$_curl > /dev/null 2>&1
-[ $? -ne 0 ] && DBG=`cat /tmp/rafay_edge` && echo -e " !! Detected failure adding cluster ${cluster_data} ${DBG}!! Exiting  " && exit -1
-rm /tmp/$$_curl
+grep -i ubuntu /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/2 201'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_edge` && echo -e " !! Detected failure adding cluster ${cluster_data} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+fi
+grep -i centos /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/1.1 201'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_edge` && echo -e " !! Detected failure adding cluster ${cluster_data} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+fi
+rm /tmp/os
 echo "[+] Successfully added cluster ${cluster_data}"
 EDGE_ID=`cat /tmp/rafay_edge |jq '.id'|cut -d'"' -f2`
 EDGE_STATUS=`cat /tmp/rafay_edge |jq '.status'|cut -d'"' -f2`

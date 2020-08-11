@@ -14,7 +14,7 @@ Sample declarative specs for imported cluster configurations are available [here
 
 - name - Name of the cluster that will be created in Rafay Platform
 - kind - Type of the cluster that needs to be provisioned. For EKS cluster, kind needs to be "imported"
-- namespace - Location of the cluster where it is running
+- region - Location of the cluster where it is running
 - blueprint - Name of the blueprint with which cluster needs to be created
 - project - Name of the project in Rafay platform where cluster needs to be created
 

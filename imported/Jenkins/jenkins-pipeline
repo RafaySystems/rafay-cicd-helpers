@@ -14,7 +14,7 @@ pipeline {
       }
     }
     
-    stage("Cluster Provision") {
+    stage("Cluster Import") {
         steps {
             sh label: '', script: '''
             cd imported/scripts

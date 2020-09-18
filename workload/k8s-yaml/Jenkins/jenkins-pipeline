@@ -8,6 +8,8 @@ pipeline {
       RCTL_API_SECRET=credentials('rafay_secret_key')
       RCTL_REST_ENDPOINT="console.rafay.dev"
       RCTL_PROJECT="defaultproject"
+      WORKLOAD_NAME="speedtest-demo"
+      WORKLOAD_NAMESPACE="speedtest"
   }
   stages {
    stage("Checkout Code") {
@@ -27,7 +29,7 @@ pipeline {
             grep -i $WORKLOAD_NAMESPACE /tmp/namespace > /dev/null 2>&1
             if [ $? -eq 1 ];
             then
-                ./rctl namespace create ./worklaod/k8s-yaml/manifests/namespace-specs.yaml
+                ./rctl namespace create ./worklaod/k8s-yaml/manifests/namespace-spec.yaml
             fi
             rm /tmp/namespace
             ./rctl workload list > /tmp/workload

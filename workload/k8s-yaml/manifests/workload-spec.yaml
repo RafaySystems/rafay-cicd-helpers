@@ -1,0 +1,6 @@
+name: speedtest-demo
+namespace: speedtest
+project: defaultproject
+type: NativeYaml
+clusters: "eks-demo3"
+payload: ./speedtest.yaml

@@ -29,16 +29,16 @@ pipeline {
             grep -i $WORKLOAD_NAMESPACE /tmp/namespace > /dev/null 2>&1
             if [ $? -eq 1 ];
             then
-                ./rctl namespace create ./worklaod/k8s-yaml/manifests/namespace-spec.yaml
+                ./rctl namespace create ./workload/k8s-yaml/manifests/namespace-spec.yaml
             fi
             rm /tmp/namespace
             ./rctl workload list > /tmp/workload
             grep -i $WORKLOAD_NAME /tmp/workload > /dev/null 2>&1
             if [ $? -eq 1 ];
             then
-                ./rctl workload create ./worklaod/k8s-yaml/manifests/workload-spec.yaml
+                ./rctl workload create ./workload/k8s-yaml/manifests/workload-spec.yaml
             else
-                ./rctl workload update ./worklaod/k8s-yaml/manifests/workload-spec.yaml
+                ./rctl workload update ./workload/k8s-yaml/manifests/workload-spec.yaml
             fi
             rm /tmp/workload
             ./rctl workload publish $WORKLOAD_NAME

@@ -1,0 +1,15 @@
+image: atlassian/default-image:2
+
+pipelines:
+  default:
+    - step:
+        variables:
+          RCTL_REST_ENDPOINT: $RCTL_REST_ENDPOINT
+          RCTL_OPS_ENDPOINT: $RCTL_REST_ENDPOINT
+          RCTL_API_KEY: $RCTL_API_KEY
+          RCTL_API_SECRET: $RCTL_API_SECRET
+          RCTL_PROJECT: $RCTL_PROJECT
+        script:
+          - WORKLOAD_NAME="speedtest-demo"
+          - WORKLOAD_NAMESPACE="speedtest"
+          - /bin/bash rafay_workload.sh ${WORKLOAD_NAME} ${WORKLOAD_NAMESPACE}

@@ -3,8 +3,10 @@
 pipeline {
   agent any
   environment {
-      RAFAY_USERNAME=credentials('Rafay_Username')
-      RAFAY_PASSWORD=credentials('Rafay_Password')
+      RCTL_API_KEY=credentials('rafay_api_key')
+      RCTL_API_SECRET=credentials('rafay_secret_key')
+      RCTL_REST_ENDPOINT="console.rafay.dev"
+      RCTL_PROJECT="defaultproject"
   }
   stages {
     stage("Checkout Repo") {
@@ -13,13 +15,21 @@ pipeline {
 
       }
     }
-    
     stage("Cluster Import") {
         steps {
             sh label: '', script: '''
-            cd imported/scripts
-            chmod +x rafay_imported_cluster.sh
-            ./rafay_imported_cluster.sh -u $RAFAY_USERNAME -p $RAFAY_PASSWORD -f ../examples/imported_cluster.yaml -a
+            #!/bin/bash
+            rm -f rctl-linux-amd64.tar.bz2
+            wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+            tar -xf rctl-linux-amd64.tar.bz2
+            chmod 0755 rctl
+            ./rctl create cluster -f imported/examples/imported_cluster.yaml > cluster_bootstrap.yaml
+            grep -i "cluster.rafay.dev" cluster_bootstrap.yaml > /dev/null 2>&1
+            if [ $? -eq 0 ];
+            then
+                #kubectl apply -f cluster_bootstrap.yaml
+                echo "cluster success"
+            fi
             '''
         }
     }

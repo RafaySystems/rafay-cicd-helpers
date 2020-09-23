@@ -1,5 +1,13 @@
-kind: imported
-name: eks-dev
-region: aws/us-east-1
-project: defaultproject
-blueprint: default
+kind: Cluster
+metadata:
+  # set the name of the cluster
+  name: demo-imported-cluster-01
+  # specific the project name to create the cluster
+  project: defaultproject
+spec:
+  # type can be "imported"
+  type: imported
+  # blueprint below is optional, if not specified, default value is "default"
+  blueprint: default
+  # location, can be custom or predefined
+  location: aws/us-east-1

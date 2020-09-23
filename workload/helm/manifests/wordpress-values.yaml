@@ -1,0 +1,32 @@
+wordpressUsername: user
+
+## Application password
+## Defaults to a random 10-character alphanumeric string if not set
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+##
+wordpressPassword: "demo!23"
+
+service:
+  type: ClusterIP
+  ## HTTP Port
+  ##
+  port: 80
+  ## HTTPS Port
+  ##
+  httpsPort: 443
+  ## HTTPS Target Port
+  ## defaults to https unless overridden to the specified port.
+  ## if you want the target port to be "http" or "80" you can specify that here.
+  ##
+  httpsTargetPort: http
+  ## Metrics Port
+  ##
+  metricsPort: 9117
+
+ingress:
+  ## Set to true to enable ingress record generation
+  ##
+  enabled: true
+  hostname: wordpress.example.com
+  annotations:
+    kubernetes.io/ingress.class: nginx

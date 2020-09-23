@@ -1,0 +1,7 @@
+name: wordpress-demo
+namespace: wordpress
+project: defaultproject
+type: Helm
+clusters: "eks-demo3"
+payload: "./wordpress-9.0.3.tgz"
+values: "./wordpress-values.yaml"

@@ -27,8 +27,7 @@ pipeline {
             grep -i "cluster.rafay.dev" cluster_bootstrap.yaml > /dev/null 2>&1
             if [ $? -eq 0 ];
             then
-                #kubectl apply -f cluster_bootstrap.yaml
-                echo "cluster success"
+                kubectl apply -f cluster_bootstrap.yaml
             fi
             '''
         }

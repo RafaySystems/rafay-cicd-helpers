@@ -393,7 +393,10 @@ then
     [ $? -ne 0 ] && DBG=`cat /tmp/rafay_edge` && echo -e " !! Detected failure adding cluster ${cluster_data} ${DBG}!! Exiting  " && exit -1
     rm /tmp/$$_curl
 fi
-rm /tmp/os
+if [ -f /tmp/os ];
+then
+    rm /tmp/os
+fi
 echo "[+] Successfully added cluster ${cluster_data}"
 EDGE_ID=`cat /tmp/rafay_edge |jq '.id'|cut -d'"' -f2`
 EDGE_STATUS=`cat /tmp/rafay_edge |jq '.status'|cut -d'"' -f2`

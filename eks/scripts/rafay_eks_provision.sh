@@ -355,6 +355,8 @@ fi
 if grep -q "null" <<< "$NODEGROUP_SECURITY_GROUPS";
 then
    NODEGROUP_SECURITY_GROUPS=''
+else
+   NODE_SECURITY_GROUPS=$(echo "$NODEGROUP_SECURITY_GROUPS"  | sed 's/"/\\"/g')
 fi
 
 if [[ "$ENDPOINT_PUBLIC_ACCESS" == false  &&  "$ENDPOINT_PRIVATE_ACCESS" == true ]];
@@ -373,12 +375,12 @@ then
 fi
 
 
-cluster_data='{"name":"'"${CLUSTER_NAME}"'","provider_type":1,"auto_create":true,"cluster_type":"'"${CLUSTER_TYPE}"'","capacity":[],"cluster_blueprint":"'"${CLUSTER_BLUEPRINT}"'","edge_provider_params":{"params":"{\"region\":\"aws/'"${CLUSTER_PROVIDER_REGION}"'\",\"instance_type\":\"'"${NODEGROUP_INSTANCE_TYPE}"'\",\"version\":\"'"${K8S_VERSION}"'\",\"nodes\":'${NODES_DESIRED}',\"nodes_min\":'${NODES_MIN}',\"nodes_max\":'${NODES_MAX}',\"node_volume_type\":\"'"${NODE_VOLUME_TYPE}"'\",\"node_ami_family\":\"'"${NODE_AMI_FAMILY}"'\",\"vpc_nat_mode\":\"'"${NAT_GATEWAY_MODE}"'\",\"vpc_cidr\":\"'"${VPC_CIDR}"'\",\"enable_full_access_to_ecr\":'${IAM_ECR}',\"enable_asg_access\":'${IAM_ASG}',\"managed\":'${NODEGROUP_MANAGED}',\"node_private_networking\":'${NODEGROUP_PRIVATE_NETWORKING}',\"zones\":['"$CP_AZS"'],\"vpc_private_subnets\":['"$PRI_SUBNETS"'],\"vpc_public_subnets\":['"$PUB_SUBNETS"'],\"node_zones\":['"${NODEGROUP_AZS}"'],\"node_ami\":\"'"${NODE_AMI}"'\",\"nodegroup_name\":\"'"${NODEGROUP_NAME}"'\",\"node_security_groups\":['"${NODEGROUP_SECURITY_GROUPS}"'],\"ssh_public_key\":\"'"${NODE_SSH_KEY}"'\",'${ENDPOINT_ACCESS_CONFIG}'}"},"cloud_provider":"AWS","provider_id":"'"${PROVIDER_ID}"'","ha_enabled":true,"auto_approve_nodes":true,"metro":{"name":"aws/'"${CLUSTER_PROVIDER_REGION}"'"}}'
+cluster_data='{"name":"'"${CLUSTER_NAME}"'","provider_type":1,"auto_create":true,"cluster_type":"'"${CLUSTER_TYPE}"'","capacity":[],"cluster_blueprint":"'"${CLUSTER_BLUEPRINT}"'","edge_provider_params":{"params":"{\"region\":\"aws/'"${CLUSTER_PROVIDER_REGION}"'\",\"instance_type\":\"'"${NODEGROUP_INSTANCE_TYPE}"'\",\"version\":\"'"${K8S_VERSION}"'\",\"nodes\":'${NODES_DESIRED}',\"nodes_min\":'${NODES_MIN}',\"nodes_max\":'${NODES_MAX}',\"node_volume_type\":\"'"${NODE_VOLUME_TYPE}"'\",\"node_ami_family\":\"'"${NODE_AMI_FAMILY}"'\",\"vpc_nat_mode\":\"'"${NAT_GATEWAY_MODE}"'\",\"vpc_cidr\":\"'"${VPC_CIDR}"'\",\"enable_full_access_to_ecr\":'${IAM_ECR}',\"enable_asg_access\":'${IAM_ASG}',\"managed\":'${NODEGROUP_MANAGED}',\"node_private_networking\":'${NODEGROUP_PRIVATE_NETWORKING}',\"zones\":['"$CP_AZS"'],\"vpc_private_subnets\":['"$PRI_SUBNETS"'],\"vpc_public_subnets\":['"$PUB_SUBNETS"'],\"node_zones\":['"${NODEGROUP_AZS}"'],\"node_ami\":\"'"${NODE_AMI}"'\",\"nodegroup_name\":\"'"${NODEGROUP_NAME}"'\",\"node_security_groups\":['"${NODE_SECURITY_GROUPS}"'],\"ssh_public_key\":\"'"${NODE_SSH_KEY}"'\",'${ENDPOINT_ACCESS_CONFIG}'}"},"cloud_provider":"AWS","provider_id":"'"${PROVIDER_ID}"'","ha_enabled":true,"auto_approve_nodes":true,"metro":{"name":"aws/'"${CLUSTER_PROVIDER_REGION}"'"}}'
 
 
 curl -k -vvvvv -d ${cluster_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/edges/ -o /tmp/rafay_edge > /tmp/$$_curl 2>&1
 grep -i ubuntu /tmp/os > /dev/null 2>&1
-if [ $? -eq 0 ];
+if [ $? -eq 0 ] || [[ "$OSTYPE" == "darwin"* ]];
 then
     grep 'HTTP/2 201'  /tmp/$$_curl > /dev/null 2>&1
     [ $? -ne 0 ] && DBG=`cat /tmp/rafay_edge` && echo -e " !! Detected failure adding cluster ${cluster_data} ${DBG}!! Exiting  " && exit -1

@@ -7,7 +7,7 @@ general:
   # AWS Region where cluster needs to be provisioned
   region: us-east-1
   # Supported Kubernetes Version for EKS
-  k8sVersion: 1.15
+  k8sVersion: 1.16
   # Name of Rafay Cloud Credentials (can be based on IAM User or Role)
   credentials: aws-dev
   # Name of blueprint to be used
@@ -17,6 +17,9 @@ general:
 controlPlane:
   # Specify the AZs where the EKS Master will be provisioned
   availabilityZones: []
+  clusterEndpoints:
+    publicAccess: false
+    privateAccess: true
 
 networking:
   # If false, will create new VPCs and Subnets

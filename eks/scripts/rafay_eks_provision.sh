@@ -166,6 +166,9 @@ IAM_ASG=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.s
 IAM_ROUTE53=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.iam.withAddonPolicies.route53' | tr \" " " | awk '{print $1}' | tr -d "\n"`
 IAM_APPMESH=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.iam.withAddonPolicies.appmesh' | tr \" " " | awk '{print $1}' | tr -d "\n"`
 IAM_ECR=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.iam.withAddonPolicies.ecr' | tr \" " " | awk '{print $1}' | tr -d "\n"`
+ENDPOINT_PUBLIC_ACCESS=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.controlPlane.clusterEndpoints.publicAccess' | tr \" " " | awk '{print $1}' | tr -d "\n"`
+ENDPOINT_PRIVATE_ACCESS=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.controlPlane.clusterEndpoints.privateAccess' | tr \" " " | awk '{print $1}' | tr -d "\n"`
+
 
 
 if [ $CLUSTER_TYPE != "AmazonEKS" ];
@@ -174,8 +177,8 @@ then
 fi
 
 case $K8S_VERSION in
-  ("1.14"|"1.15") ;;
-  (*) echo "Valid input for general.k8sVersion is "1.14" or "1.15" !! Exiting" && exit -1;;
+  ("1.15"|"1.16") ;;
+  (*) echo "Valid input for general.k8sVersion is "1.15" or "1.16" !! Exiting" && exit -1;;
 esac
 
 case $USE_EXISTING_VPC in
@@ -199,8 +202,8 @@ case $NODEGROUP_PRIVATE_NETWORKING in
 esac
 
 case $NODE_AMI_FAMILY in
-  (AmazonLinux2|Ubuntu1804|null) ;;
-  (*) echo "Valid input for nodeGroups.amiFamily is "AmazonLinux2" or "Ubuntu1804" !! Exiting" && exit -1;;
+  (AmazonLinux2|Ubuntu1804|Bottlerocket|null) ;;
+  (*) echo "Valid input for nodeGroups.amiFamily is "AmazonLinux2", "Ubuntu1804", "Bottlerocket" !! Exiting" && exit -1;;
 esac
 
 case $NODE_VOLUME_TYPE in
@@ -246,7 +249,7 @@ LookupProvider () {
   return 1
 }
 
-projects=`curl -k -s -H "x-rafay-partner: rx28oml" -H "content-type: application/json;charset=UTF-8" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/auth/v1/projects/ | jq '.results[]|.name,.id' |cut -d'"' -f2`
+projects=`curl -k -s -H "x-rafay-partner: rx28oml" -H "content-type: application/json;charset=UTF-8" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/auth/v1/projects/?limit=100 | jq '.results[]|.name,.id' |cut -d'"' -f2`
 
 
 PROJECTS_ARRAY=( $projects )
@@ -354,8 +357,23 @@ then
    NODEGROUP_SECURITY_GROUPS=''
 fi
 
+if [[ "$ENDPOINT_PUBLIC_ACCESS" == false  &&  "$ENDPOINT_PRIVATE_ACCESS" == true ]];
+then
+    ENDPOINT_ACCESS_CONFIG='\"cluster_endpoint_access_type\":\"private\",\"private_access\":\"true\",\"public_access\":\"false\"'
+fi
 
-cluster_data='{"name":"'"${CLUSTER_NAME}"'","provider_type":1,"auto_create":true,"cluster_type":"'"${CLUSTER_TYPE}"'","capacity":[],"cluster_blueprint":"'"${CLUSTER_BLUEPRINT}"'","edge_provider_params":{"params":"{\"region\":\"aws/'"${CLUSTER_PROVIDER_REGION}"'\",\"instance_type\":\"'"${NODEGROUP_INSTANCE_TYPE}"'\",\"version\":\"'"${K8S_VERSION}"'\",\"nodes\":'${NODES_DESIRED}',\"nodes_min\":'${NODES_MIN}',\"nodes_max\":'${NODES_MAX}',\"node_volume_type\":\"'"${NODE_VOLUME_TYPE}"'\",\"node_ami_family\":\"'"${NODE_AMI_FAMILY}"'\",\"vpc_nat_mode\":\"'"${NAT_GATEWAY_MODE}"'\",\"vpc_cidr\":\"'"${VPC_CIDR}"'\",\"enable_full_access_to_ecr\":'${IAM_ECR}',\"enable_asg_access\":'${IAM_ASG}',\"managed\":'${NODEGROUP_MANAGED}',\"node_private_networking\":'${NODEGROUP_PRIVATE_NETWORKING}',\"zones\":['"$CP_AZS"'],\"vpc_private_subnets\":['"$PRI_SUBNETS"'],\"vpc_public_subnets\":['"$PUB_SUBNETS"'],\"node_zones\":['"${NODEGROUP_AZS}"'],\"node_ami\":\"'"${NODE_AMI}"'\",\"nodegroup_name\":\"'"${NODEGROUP_NAME}"'\",\"node_security_groups\":['"${NODEGROUP_SECURITY_GROUPS}"'],\"ssh_public_key\":\"'"${NODE_SSH_KEY}"'\"}"},"cloud_provider":"AWS","provider_id":"'"${PROVIDER_ID}"'","ha_enabled":true,"auto_approve_nodes":true,"metro":{"name":"aws/'"${CLUSTER_PROVIDER_REGION}"'"}}'
+if [[ "$ENDPOINT_PUBLIC_ACCESS" == true  &&  "$ENDPOINT_PRIVATE_ACCESS" == false ]];
+then
+    ENDPOINT_ACCESS_CONFIG='\"cluster_endpoint_access_type\":\"public\",\"private_access\":\"false\",\"public_access\":\"true\"'
+fi
+
+if [[ "$ENDPOINT_PUBLIC_ACCESS" == true  &&  "$ENDPOINT_PRIVATE_ACCESS" == true ]];
+then
+    ENDPOINT_ACCESS_CONFIG='\"cluster_endpoint_access_type\":\"private_and_public\",\"private_access\":\"true\",\"public_access\":\"true\"'
+fi
+
+
+cluster_data='{"name":"'"${CLUSTER_NAME}"'","provider_type":1,"auto_create":true,"cluster_type":"'"${CLUSTER_TYPE}"'","capacity":[],"cluster_blueprint":"'"${CLUSTER_BLUEPRINT}"'","edge_provider_params":{"params":"{\"region\":\"aws/'"${CLUSTER_PROVIDER_REGION}"'\",\"instance_type\":\"'"${NODEGROUP_INSTANCE_TYPE}"'\",\"version\":\"'"${K8S_VERSION}"'\",\"nodes\":'${NODES_DESIRED}',\"nodes_min\":'${NODES_MIN}',\"nodes_max\":'${NODES_MAX}',\"node_volume_type\":\"'"${NODE_VOLUME_TYPE}"'\",\"node_ami_family\":\"'"${NODE_AMI_FAMILY}"'\",\"vpc_nat_mode\":\"'"${NAT_GATEWAY_MODE}"'\",\"vpc_cidr\":\"'"${VPC_CIDR}"'\",\"enable_full_access_to_ecr\":'${IAM_ECR}',\"enable_asg_access\":'${IAM_ASG}',\"managed\":'${NODEGROUP_MANAGED}',\"node_private_networking\":'${NODEGROUP_PRIVATE_NETWORKING}',\"zones\":['"$CP_AZS"'],\"vpc_private_subnets\":['"$PRI_SUBNETS"'],\"vpc_public_subnets\":['"$PUB_SUBNETS"'],\"node_zones\":['"${NODEGROUP_AZS}"'],\"node_ami\":\"'"${NODE_AMI}"'\",\"nodegroup_name\":\"'"${NODEGROUP_NAME}"'\",\"node_security_groups\":['"${NODEGROUP_SECURITY_GROUPS}"'],\"ssh_public_key\":\"'"${NODE_SSH_KEY}"'\",'${ENDPOINT_ACCESS_CONFIG}'}"},"cloud_provider":"AWS","provider_id":"'"${PROVIDER_ID}"'","ha_enabled":true,"auto_approve_nodes":true,"metro":{"name":"aws/'"${CLUSTER_PROVIDER_REGION}"'"}}'
 
 
 curl -k -vvvvv -d ${cluster_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/edges/ -o /tmp/rafay_edge > /tmp/$$_curl 2>&1
@@ -403,6 +421,14 @@ do
   PROVISION_STATUS=`curl -k -s -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/edges/${EDGE_ID}/ | jq '.provision.status' |cut -d'"' -f2`
 
   if [ $PROVISION_STATUS == "INFRA_CREATION_FAILED" ];
+  then
+    echo -e " !! Cluster provision failed !!  "
+    COMMENTS=`curl -k -s -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/edges/${EDGE_ID}/ | jq '.provision.comments' |cut -d'"' -f2`
+    echo -e "$COMMENTS"
+    echo -e " !! Exiting !!  " && exit -1
+  fi
+
+  if [ $PROVISION_STATUS == "BOOTSTRAP_CREATION_FAILED" ];
   then
     echo -e " !! Cluster provision failed !!  "
     COMMENTS=`curl -k -s -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/edges/${EDGE_ID}/ | jq '.provision.comments' |cut -d'"' -f2`

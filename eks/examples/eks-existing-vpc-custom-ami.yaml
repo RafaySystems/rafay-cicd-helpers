@@ -12,6 +12,8 @@ general:
   credentials: aws-dev
   # Name of blueprint to be used
   blueprint: default
+  # Version of the blueprint to be used
+  blueprint_version:
   # Name of project where cluster has to be provisioned
   project: defaultproject
 controlPlane:

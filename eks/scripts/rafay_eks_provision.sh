@@ -113,6 +113,7 @@ CLUSTER_PROVIDER_REGION=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml
 CLUSTER_PROVIDER_CREDENTIALS=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.general.credentials' | tr \" " " | awk '{print $1}' | tr -d "\n"`
 K8S_VERSION=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.general.k8sVersion' | tr \" " " | awk '{print $1}' | tr -d "\n"`
 CLUSTER_BLUEPRINT=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.general.blueprint' | tr \" " " | awk '{print $1}' | tr -d "\n"`
+CLUSTER_BLUEPRINT_VERSION=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.general.blueprint_version' | tr \" " " | awk '{print $1}' | tr -d "\n"`
 PROJECT=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.general.project' | tr \" " " | awk '{print $1}' | tr -d "\n"`
 CONTROL_PLANE_AZS=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.controlPlane.availabilityZones'|tr "[" " "|tr "]" " "|tr -d "\n"|tr -d "[:space:]"|sed 's/"/\\"/g'`
 
@@ -143,6 +144,12 @@ else
         PRIVATE_SUBNETS=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.networking.vpc.subnets.private[].id'| tr [:space:] ","|sed 's/.$//'`
     fi
 fi
+
+if [ $CLUSTER_BLUEPRINT_VERSION == "null" ];
+    then
+        CLUSTER_BLUEPRINT_VERSION=''
+fi
+
 
 USE_EXISTING_VPC=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.networking.useExistingVpc' | tr \" " " | awk '{print $1}' | tr -d "\n"`
 NAT_GATEWAY_MODE=`cat ${CLUSTER_META_FILE} | $python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq '.networking.vpc.nat.gateway' | tr \" " " | awk '{print $1}' | tr -d "\n"`
@@ -177,8 +184,8 @@ then
 fi
 
 case $K8S_VERSION in
-  ("1.15"|"1.16") ;;
-  (*) echo "Valid input for general.k8sVersion is "1.15" or "1.16" !! Exiting" && exit -1;;
+  ("1.15"|"1.16"|"1.17") ;;
+  (*) echo "Valid input for general.k8sVersion is "1.15" or "1.16" or "1.17" !! Exiting" && exit -1;;
 esac
 
 case $USE_EXISTING_VPC in
@@ -374,8 +381,7 @@ then
     ENDPOINT_ACCESS_CONFIG='\"cluster_endpoint_access_type\":\"private_and_public\",\"private_access\":\"true\",\"public_access\":\"true\"'
 fi
 
-
-cluster_data='{"name":"'"${CLUSTER_NAME}"'","provider_type":1,"auto_create":true,"cluster_type":"'"${CLUSTER_TYPE}"'","capacity":[],"cluster_blueprint":"'"${CLUSTER_BLUEPRINT}"'","edge_provider_params":{"params":"{\"region\":\"aws/'"${CLUSTER_PROVIDER_REGION}"'\",\"instance_type\":\"'"${NODEGROUP_INSTANCE_TYPE}"'\",\"version\":\"'"${K8S_VERSION}"'\",\"nodes\":'${NODES_DESIRED}',\"nodes_min\":'${NODES_MIN}',\"nodes_max\":'${NODES_MAX}',\"node_volume_type\":\"'"${NODE_VOLUME_TYPE}"'\",\"node_ami_family\":\"'"${NODE_AMI_FAMILY}"'\",\"vpc_nat_mode\":\"'"${NAT_GATEWAY_MODE}"'\",\"vpc_cidr\":\"'"${VPC_CIDR}"'\",\"enable_full_access_to_ecr\":'${IAM_ECR}',\"enable_asg_access\":'${IAM_ASG}',\"managed\":'${NODEGROUP_MANAGED}',\"node_private_networking\":'${NODEGROUP_PRIVATE_NETWORKING}',\"zones\":['"$CP_AZS"'],\"vpc_private_subnets\":['"$PRI_SUBNETS"'],\"vpc_public_subnets\":['"$PUB_SUBNETS"'],\"node_zones\":['"${NODEGROUP_AZS}"'],\"node_ami\":\"'"${NODE_AMI}"'\",\"nodegroup_name\":\"'"${NODEGROUP_NAME}"'\",\"node_security_groups\":['"${NODE_SECURITY_GROUPS}"'],\"ssh_public_key\":\"'"${NODE_SSH_KEY}"'\",'${ENDPOINT_ACCESS_CONFIG}'}"},"cloud_provider":"AWS","provider_id":"'"${PROVIDER_ID}"'","ha_enabled":true,"auto_approve_nodes":true,"metro":{"name":"aws/'"${CLUSTER_PROVIDER_REGION}"'"}}'
+cluster_data='{"name":"'"${CLUSTER_NAME}"'","provider_type":1,"auto_create":true,"cluster_type":"'"${CLUSTER_TYPE}"'","capacity":[],"cluster_blueprint":"'"${CLUSTER_BLUEPRINT}"'","cluster_blueprint_version":"'"${CLUSTER_BLUEPRINT_VERSION}"'","edge_provider_params":{"params":"{\"region\":\"aws/'"${CLUSTER_PROVIDER_REGION}"'\",\"instance_type\":\"'"${NODEGROUP_INSTANCE_TYPE}"'\",\"version\":\"'"${K8S_VERSION}"'\",\"nodes\":'${NODES_DESIRED}',\"nodes_min\":'${NODES_MIN}',\"nodes_max\":'${NODES_MAX}',\"node_volume_type\":\"'"${NODE_VOLUME_TYPE}"'\",\"node_ami_family\":\"'"${NODE_AMI_FAMILY}"'\",\"vpc_nat_mode\":\"'"${NAT_GATEWAY_MODE}"'\",\"vpc_cidr\":\"'"${VPC_CIDR}"'\",\"enable_full_access_to_ecr\":'${IAM_ECR}',\"enable_asg_access\":'${IAM_ASG}',\"managed\":'${NODEGROUP_MANAGED}',\"node_private_networking\":'${NODEGROUP_PRIVATE_NETWORKING}',\"zones\":['"$CP_AZS"'],\"vpc_private_subnets\":['"$PRI_SUBNETS"'],\"vpc_public_subnets\":['"$PUB_SUBNETS"'],\"node_zones\":['"${NODEGROUP_AZS}"'],\"node_ami\":\"'"${NODE_AMI}"'\",\"nodegroup_name\":\"'"${NODEGROUP_NAME}"'\",\"node_security_groups\":['"${NODE_SECURITY_GROUPS}"'],\"ssh_public_key\":\"'"${NODE_SSH_KEY}"'\",'${ENDPOINT_ACCESS_CONFIG}'}"},"cloud_provider":"AWS","provider_id":"'"${PROVIDER_ID}"'","ha_enabled":true,"auto_approve_nodes":true,"metro":{"name":"aws/'"${CLUSTER_PROVIDER_REGION}"'"}}'
 
 
 curl -k -vvvvv -d ${cluster_data} -H "content-type: application/json;charset=UTF-8" -H "referer: https://${OPS_HOST}/" -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/edges/ -o /tmp/rafay_edge > /tmp/$$_curl 2>&1
@@ -393,15 +399,38 @@ then
     [ $? -ne 0 ] && DBG=`cat /tmp/rafay_edge` && echo -e " !! Detected failure adding cluster ${cluster_data} ${DBG}!! Exiting  " && exit -1
     rm /tmp/$$_curl
 fi
-if [ -f /tmp/os ];
-then
-    rm /tmp/os
-fi
+
 echo "[+] Successfully added cluster ${cluster_data}"
 EDGE_ID=`cat /tmp/rafay_edge |jq '.id'|cut -d'"' -f2`
 EDGE_STATUS=`cat /tmp/rafay_edge |jq '.status'|cut -d'"' -f2`
 CLUSTER_HEALTH=`cat /tmp/rafay_edge |jq '.health'|cut -d'"' -f2`
 rm /tmp/rafay_edge
+
+curl -k -vvvv -H "x-rafay-partner: rx28oml" -H "x-csrftoken: ${csrf_token}" -H "cookie: partnerID=rx28oml; csrftoken=${csrf_token}; rsid=${rsid}" -X PUT https://${OPS_HOST}/edge/v1/projects/${PROJECT_ID}/edges/${EDGE_ID}/provision/ -o /tmp/rafay_edge_provision > /tmp/$$_curl 2>&1
+grep -i ubuntu /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ] || [[ "$OSTYPE" == "darwin"* ]];
+then
+    grep 'HTTP/2 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_edge_provision` && echo -e " !! Detected failure provisioning cluster ${CLUSTER_NAME} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+fi
+grep -i centos /tmp/os > /dev/null 2>&1
+if [ $? -eq 0 ];
+then
+    grep 'HTTP/1.1 200'  /tmp/$$_curl > /dev/null 2>&1
+    [ $? -ne 0 ] && DBG=`cat /tmp/rafay_edge_provision` && echo -e " !! Detected failure provisioning cluster ${CLUSTER_NAME} ${DBG}!! Exiting  " && exit -1
+    rm /tmp/$$_curl
+fi
+
+rm /tmp/rafay_edge_provision
+
+if [ -f /tmp/os ];
+then
+    rm /tmp/os
+fi
+
+echo "[+] Successfully provisioned cluster ${CLUSTER_NAME}"
+
 EDGE_STATUS_ITERATIONS=1
 CLUSTER_HEALTH_ITERATIONS=1
 while [ "$EDGE_STATUS" != "READY" ]

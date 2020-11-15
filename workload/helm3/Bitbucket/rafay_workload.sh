@@ -37,7 +37,7 @@ fi
 ./rctl publish workload $WORKLOAD_NAME
 workload_status="Not Ready"
 workload_status_iterations=1
-while [ "$workload_status" != "Published" ];
+while [ "$workload_status" != "Ready" ];
 do
  workload_status=`./rctl status workload $WORKLOAD_NAME -o json|jq .result[].status|tr -d '"'`
  echo $workload_status

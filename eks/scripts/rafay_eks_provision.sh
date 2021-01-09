@@ -184,8 +184,8 @@ then
 fi
 
 case $K8S_VERSION in
-  ("1.15"|"1.16"|"1.17") ;;
-  (*) echo "Valid input for general.k8sVersion is "1.15" or "1.16" or "1.17" !! Exiting" && exit -1;;
+  ("1.15"|"1.16"|"1.17"|"1.18") ;;
+  (*) echo "Valid input for general.k8sVersion is "1.15" or "1.16" or "1.17" or "1.18" !! Exiting" && exit -1;;
 esac
 
 case $USE_EXISTING_VPC in

@@ -24,6 +24,7 @@ Sample declarative specs for creating addon are available [here](../addon/exampl
 ### Addon creation
 
 ```
+CERT_MANAGER_NAMESPACE="cert-manager"
 ADDON_TYPE=`cat addon/examples/cert-manager-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.template.type | tr \" " " | awk '{print $1}' | tr -d "\n"`
 ADDON_NAME=`cat addon/examples/cert-manager-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.addon | tr \" " " | awk '{print $1}' | tr -d "\n"`
 rctl create addon $ADDON_TYPE $ADDON_NAME --namespace $CERT_MANAGER_NAMESPACE

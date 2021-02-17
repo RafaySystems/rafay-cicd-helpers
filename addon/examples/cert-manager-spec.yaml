@@ -12,5 +12,5 @@ spec:
   template:
     # type of addon
     type: yaml
-    yamlFile: ./cert-manager.yaml
+    yamlFile: addon/examples/cert-manager.yaml
 

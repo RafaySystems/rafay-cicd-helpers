@@ -11,6 +11,6 @@ spec:
   template:
     # type of addon
     type: helm3
-    chartFile: ./vault-0.9.1.tgz
+    chartFile: addon/examples/vault-0.9.1.tgz
     # values file is optional
-    valuesFile: ./vault-values.yaml
+    valuesFile: addon/examples/vault-values.yaml

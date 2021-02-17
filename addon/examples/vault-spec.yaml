@@ -1,16 +1,16 @@
----
 kind: AddonVersion
 metadata:
   # version name
-  name: v1
+  name: v0.9.1
   # project name. optional
   project: defaultproject
 spec:
   # addon name
-  addon: cert-manager
+  addon: vault-server
   # template for different addon types
   template:
     # type of addon
-    type: yaml
-    yamlFile: ./cert-manager.yaml
-
+    type: helm3
+    chartFile: ./vault-0.9.1.tgz
+    # values file is optional
+    valuesFile: ./vault-values.yaml

@@ -1,6 +1,18 @@
 ---
-name: km-istio-cert-manager
-addons: ["istio","cert-manager"]
-rafay_ingress: false
-project: defaultproject
-version: v1
+kind: BlueprintVersion
+metadata:
+  # version name
+  name: v1
+  # project name. optional
+  project: defaultproject
+spec:
+  # blueprint object
+  blueprint: standard-blueprint
+  # list of addons and thier versions. versions must be provided
+  addons:
+    - name: cert-manager
+      version: v1
+    - name: vault
+      version: v0.9.1
+  # rafay ingress. optional. default false
+  rafayIngress: true

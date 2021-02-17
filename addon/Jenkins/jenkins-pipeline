@@ -3,8 +3,12 @@
 pipeline {
   agent any
   environment {
-      RAFAY_USERNAME=credentials('Rafay_Username')
-      RAFAY_PASSWORD=credentials('Rafay_Password')
+      RCTL_API_KEY=credentials('rafay_api_key')
+      RCTL_API_SECRET=credentials('rafay_secret_key')
+      RCTL_REST_ENDPOINT="console.rafay.dev"
+      RCTL_PROJECT="defaultproject"
+      CERT_MANAGER_NAMESPACE="cert-manager"
+      VAULT_NAMESPACE="demo"
   }
   stages {
     stage("Checkout Repo") {
@@ -17,9 +21,18 @@ pipeline {
     stage("Addon Creation") {
         steps {
             sh label: '', script: '''
-            cd addon/scripts
-            chmod +x rafay_addon.sh
-            ./rafay_addon.sh -u $RAFAY_USERNAME -p $RAFAY_PASSWORD -f ../examples/cert-manager-spec.yaml
+            rm -f rctl-linux-amd64.tar.bz2
+            wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+            tar -xf rctl-linux-amd64.tar.bz2
+            chmod 0755 rctl
+            ADDON_TYPE=`cat ../examples/cert-manager-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.template.type | tr \" " " | awk '{print $1}' | tr -d "\n"`
+            ADDON_NAME=`cat ../examples/cert-manager-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.addon | tr \" " " | awk '{print $1}' | tr -d "\n"`
+            ./rctl create addon $ADDON_TYPE $ADDON_NAME --namespace $CERT_MANAGER_NAMESPACE
+            ./rctl create addon version -f ../examples/cert-manager-spec.yaml
+            ADDON_TYPE=`cat ../examples/vault-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.template.type | tr \" " " | awk '{print $1}' | tr -d "\n"`
+            ADDON_NAME=`cat ../examples/vault-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.addon | tr \" " " | awk '{print $1}' | tr -d "\n"`
+            ./rctl create addon $ADDON_TYPE $ADDON_NAME --namespace $VAULT_NAMESPACE
+            ./rctl create addon version -f ../examples/vault-spec.yaml
             '''
         }
     }

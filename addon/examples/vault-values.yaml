@@ -1,0 +1,44 @@
+## Disable vault agent injection
+##
+injector:
+  enabled: false
+
+server:
+  ## Define resource limit and limit for your Vault pod
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m
+  ## Configure ingress to expose Vault service externally
+  ingress:
+    enabled: true
+    annotations:
+      ## Add annotation to use Rafay's built-in nginx ingress controller
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      ## Change the host to your domain
+      - host: vault.example.com
+        paths: ["/"]
+    tls:
+      - secretName: vault-ingress-tls
+        hosts:
+          - vault.example.com
+  ## Disable readinessProbe and livenessProbe so Vault pod can be running after initial deployment to do the vault init and unseal process
+  readinessProbe:
+    enabled: false
+  livenessProbe:
+    enabled: false
+  dataStorage:
+    enabled: true
+    ## Set the size of the data storage for Vault server
+    size: 10Gi
+  auditStorage:
+    enabled: true
+    ## Set the size of the audit data storage for Vault server
+    size: 10Gi
+## Enable Vault UI
+ui:
+  enabled: true

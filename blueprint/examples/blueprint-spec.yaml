@@ -12,7 +12,11 @@ spec:
   addons:
     - name: cert-manager
       version: v1
-    - name: vault
+    - name: vault-server
       version: v0.9.1
+  psps:
+    - rafay-privileged-psp
+  # cluster-scoped or namespace-scoped
+  pspScope: cluster-scoped
   # rafay ingress. optional. default false
   rafayIngress: true

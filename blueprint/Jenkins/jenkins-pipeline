@@ -23,7 +23,7 @@ pipeline {
             wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
             tar -xf rctl-linux-amd64.tar.bz2
             chmod 0755 rctl
-            BLUEPRINT_NAME=`cat blueprint/examples/cert-manager-spec.yaml |python -c \'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))\' | jq .spec.blueprint | tr \\" " " | awk \'{print $1}\' | tr -d "\\n"`
+            BLUEPRINT_NAME=`cat blueprint/examples/blueprint-spec.yaml |python -c \'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))\' | jq .spec.blueprint | tr \\" " " | awk \'{print $1}\' | tr -d "\\n"`
             ./rctl create blueprint $BLUEPRINT_NAME
             ./rctl create blueprint version -f blueprint/examples/blueprint-spec.yaml
             '''

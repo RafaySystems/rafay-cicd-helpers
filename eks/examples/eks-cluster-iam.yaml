@@ -1,0 +1,30 @@
+# Usage: rctl create cluster eks -f ./test-eks-cluster.yaml
+kind: Cluster
+metadata:
+  labels:
+    env: dev
+    type: eks-workloads
+  name: test-eks
+  project: defaultproject
+spec:
+  type: eks
+  cloudprovider: dev-aws
+  blueprint: standard-blueprint
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: test-eks
+  region: us-west-1
+
+iam:
+  serviceRoleARN: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<IAM_ROLE_NAME>
+
+nodeGroups:
+  - name: custom-iam-ng-1
+    instanceType: t3.large
+    desiredCapacity: 1
+    iam:
+      instanceProfileARN: arn:aws:iam::<AWS_ACCOUNT_ID>:instance-profile/<IAM_INSTANCE_PROFILE_NAME>
+      instanceRoleARN: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<IAM_ROLE_NAME>

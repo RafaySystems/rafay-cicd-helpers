@@ -1,0 +1,30 @@
+# Usage: rctl create cluster eks -f ./test-eks-cluster.yaml
+kind: Cluster
+metadata:
+  labels:
+    env: dev
+    type: eks-workloads
+  name: test-eks
+  project: defaultproject
+spec:
+  type: eks
+  cloudprovider:dev-aws
+  blueprint: standard-blueprint
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: test-eks
+  region: us-west-1
+
+nodeGroups:
+  - name: spot-ng-1
+    minSize: 2
+    maxSize: 4
+    instancesDistribution:
+      maxPrice: 0.017
+      instanceTypes: ["t3.large"]
+      onDemandBaseCapacity: 0
+      onDemandPercentageAboveBaseCapacity: 50
+      spotInstancePools: 2

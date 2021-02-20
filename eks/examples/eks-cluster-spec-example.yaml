@@ -1,0 +1,57 @@
+# Usage: rctl create cluster eks -f ./test-eks-cluster.yaml
+kind: Cluster
+metadata:
+  labels:
+    env: dev
+    type: eks-workloads
+  name: test-eks
+  project: defaultproject
+spec:
+  type: eks
+  cloudprovider: dev-aws
+  blueprint: standard-blueprint
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+​
+metadata:
+  name: test-eks
+  region: us-west-1
+  tags:
+    'app': 'demo'
+    'owner': 'myowner'
+​
+vpc:
+  subnets:
+    private:
+      us-west-1b:
+        id: subnet-xxxxxxxxxxxxxxxxx
+      us-west-1c:
+        id: subnet-xxxxxxxxxxxxxxxxx
+    public:
+      us-west-1b:
+        id: subnet-xxxxxxxxxxxxxxxxx
+      us-west-1c:
+        id: subnet-xxxxxxxxxxxxxxxxx
+iam:
+  serviceRoleARN: arn:aws:iam::xxxxxxxxxxxx:role/<IAM_ROLE_NAME>
+nodeGroups:
+  - name: nodegroup-4
+    instanceType: t3.xlarge
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 3
+    iam:
+      instanceProfileARN: arn:aws:iam::xxxxxxxxxxxx:instance-profile/<IAM_INSTANCE_PROFILE_NAME>
+      instanceRoleARN: arn:aws:iam::xxxxxxxxxxxx:role/<IAM_ROLE_NAME>
+    volumeType: gp3
+    volumeSize: 50
+    privateNetworking: true
+    volumeEncrypted: true
+    volumeKmsKeyID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    labels:
+      'app': 'myapp'
+      'owner': 'myowner'
+secretsEncryption:
+  # ARN of the KMS key
+  keyARN: "arn:aws:kms:us-west-1:000000000000:key/00000000-0000-0000-0000-

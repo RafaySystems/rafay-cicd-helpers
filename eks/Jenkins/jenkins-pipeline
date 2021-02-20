@@ -3,14 +3,15 @@
 pipeline {
   agent any
   environment {
-      RAFAY_USERNAME=credentials('Rafay_Username')
-      RAFAY_PASSWORD=credentials('Rafay_Password')
+      RCTL_API_KEY=credentials('rafay_api_key')
+      RCTL_API_SECRET=credentials('rafay_secret_key')
+      RCTL_REST_ENDPOINT="console.rafay.dev"
+      RCTL_PROJECT="defaultproject"
   }
   stages {
     stage("Checkout Repo") {
       steps {
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RafaySystems/rafay-cicd-helpers']]])
-
       }
     }
     
@@ -18,8 +19,11 @@ pipeline {
         steps {
             sh label: '', script: '''
             cd eks/scripts
-            chmod +x rafay_eks_cluster.sh
-            ./rafay_eks_cluster.sh -u $RAFAY_USERNAME -p $RAFAY_PASSWORD -f ../examples/eks-new-vpc.yaml
+            wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+            tar -xf rctl-linux-amd64.tar.bz2
+            chmod 0755 rctl
+            chmod +x rafay_eks_provision.sh
+            ./rafay_eks_provision.sh
             '''
         }
     }

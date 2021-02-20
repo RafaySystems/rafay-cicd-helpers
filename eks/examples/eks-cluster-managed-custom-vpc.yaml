@@ -1,0 +1,39 @@
+# Usage: rctl create cluster eks -f ./test-eks-cluster.yaml
+kind: Cluster
+metadata:
+  labels:
+    env: dev
+    type: eks-workloads
+  name: test-eks
+  project: defaultproject
+spec:
+  type: eks
+  cloudprovider: dev-aws
+  blueprint: standard-blueprint
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: test-eks
+  region: us-west-1
+
+vpc:
+  subnets:
+    private:
+      us-west-1b:
+        id: subnet-xxxxxxxxxxxxxxxxx
+      us-west-1c:
+        id: subnet-xxxxxxxxxxxxxxxxx
+    public:
+      us-west-1b:
+        id: subnet-xxxxxxxxxxxxxxxxx
+      us-west-1c:
+        id: subnet-xxxxxxxxxxxxxxxxx
+
+managedNodeGroups:
+  - name: managed-ng-1  
+    instanceType: t3.large
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 3

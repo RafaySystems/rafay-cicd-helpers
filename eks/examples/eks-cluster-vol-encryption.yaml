@@ -1,0 +1,20 @@
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: test-eks
+  region: us-west-1
+  version: "1.18"
+  tags:
+    'demo': 'true'
+nodeGroups:
+  - name: nodegroup-1
+    instanceType: t3.xlarge
+    desiredCapacity: 1
+    volumeType: gp3
+    volumeSize: 50
+    privateNetworking: true
+    volumeEncrypted: true
+    volumeKmsKeyID: <KMS_KEY_ID>
+    labels:
+      'app': 'myapp'
+      'owner': 'myowner'

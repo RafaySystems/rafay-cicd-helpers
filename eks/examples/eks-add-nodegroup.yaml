@@ -1,0 +1,15 @@
+# Usage: rctl create node-group eks -f node-group-config.yml
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: test-eks
+  region: us-west-1
+  tags:
+    'demo': 'true'
+
+nodeGroups:
+  - name: ng-1
+    instanceType: t3.large
+    desiredCapacity: 1
+    # no `tags` allowed here.

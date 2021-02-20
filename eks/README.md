@@ -12,10 +12,6 @@
 
 Sample declarative specs for a variety of cluster configurations are available [here](../eks/examples)
 
-### Cluster Spec file
-
-Sample Cluster specs can be found [here](../eks/examples)
-
 
 ---
 ### EKS Cluster creation in new VPC

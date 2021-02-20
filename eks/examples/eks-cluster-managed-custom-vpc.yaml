@@ -32,7 +32,7 @@ vpc:
         id: subnet-xxxxxxxxxxxxxxxxx
 
 managedNodeGroups:
-  - name: managed-ng-1  
+  - name: managed-ng-1
     instanceType: t3.large
     desiredCapacity: 1
     minSize: 1

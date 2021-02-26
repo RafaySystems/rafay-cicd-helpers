@@ -1,0 +1,22 @@
+version: 2.1
+
+orbs:
+    jq: circleci/jq@2.2.0
+
+jobs:
+  build:
+      docker:
+        - image: cimg/python:3.9.2
+      steps:
+        - checkout
+        - jq/install
+        - run:
+              name: Create EKS cluster
+              command: |
+                cd eks/scripts
+                python3 -m pip install pyyaml
+                wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+                tar -xf rctl-linux-amd64.tar.bz2
+                chmod 0755 rctl
+                chmod +x rafay_eks_provision.sh
+                ./rafay_eks_provision.sh

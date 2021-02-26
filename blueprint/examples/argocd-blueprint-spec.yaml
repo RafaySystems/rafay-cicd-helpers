@@ -1,0 +1,19 @@
+kind: BlueprintVersion
+metadata:
+  # version name
+  name: v1
+  # project name. optional
+  project: defaultproject
+spec:
+  # blueprint object
+  blueprint: argocd-blueprint
+  # list of addons and thier versions. versions must be provided
+  addons:
+    - name: argo-cd
+      version: v2.14.7
+  psps:
+    - rafay-privileged-psp
+  # cluster-scoped or namespace-scoped
+  pspScope: cluster-scoped
+  # rafay ingress. optional. default false
+  rafayIngress: true

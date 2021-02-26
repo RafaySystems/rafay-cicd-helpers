@@ -1,0 +1,22 @@
+version: 2.1
+
+orbs:
+    jq: circleci/jq@2.2.0
+
+jobs:
+  build:
+      docker:
+        - image: cimg/python:3.9.2
+      steps:
+        - checkout
+        - jq/install
+        - run:
+              name: Create Argocd Blueprint
+              command: |
+                python3 -m pip install pyyaml
+                wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+                tar -xf rctl-linux-amd64.tar.bz2
+                chmod 0755 rctl
+                BLUEPRINT_NAME=`cat addon/examples/argocd-blueprint-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.blueprint | tr \" " " | awk '{print $1}' | tr -d "\n"`
+                ./rctl create blueprint $BLUEPRINT_NAME
+                ./rctl create blueprint version -f addon/examples/argocd-blueprint-spec.yaml

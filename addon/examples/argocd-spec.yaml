@@ -1,0 +1,16 @@
+kind: AddonVersion
+metadata:
+  # version name
+  name: v2.14.7
+  # project name. optional
+  project: defaultproject
+spec:
+  # addon name
+  addon: argo-cd
+  # template for different addon types
+  template:
+    # type of addon
+    type: helm3
+    chartFile: addon/examples/argo-cd-2.14.7.tgz
+    # values file is optional
+    #valuesFile: addon/examples/argocd-values.yaml

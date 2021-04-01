@@ -1,0 +1,52 @@
+---
+version: 2
+plan:
+  project-key: RAFAYBAMBOO
+  key: CREATCLUSTER
+  name: rafay_eks_provision
+stages:
+- Default Stage:
+    manual: false
+    final: false
+    jobs:
+    - eks-provision
+create-cluster:
+  key: JOB1
+  tasks:
+# Checkout Task will be added implicitly during Specs import
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        cd /Users/gopi/eks/scripts
+        wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+        tar -xf rctl-linux-amd64.tar.bz2
+        chmod 0755 rctl
+        chmod +x rafay_eks_provision.sh
+        ./rafay_eks_provision.sh
+      environment: RCTL_API_KEY="rafay_api_key", RCTL_API_SECRET="rafay_secret_key", RCTL_REST_ENDPOINT="console.rafay.dev", RCTL_PROJECT="defaultproject"
+triggers:
+- polling:
+    period: '180'
+branches:
+  create: manually
+  delete: never
+  link-to-jira: true
+notifications: []
+labels: []
+other:
+  concurrent-build-plugin: system-default
+---
+version: 2
+plan:
+  key: RAFAYBAMBOO-CREATCLUSTER
+plan-permissions:
+- users:
+  - gopi
+  permissions:
+  - view
+  - edit
+  - build
+  - clone
+  - admin
+...

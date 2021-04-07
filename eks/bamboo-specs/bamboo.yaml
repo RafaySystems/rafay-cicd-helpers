@@ -1,0 +1,59 @@
+---
+version: 2
+plan:
+  project-key: EKS
+  key: PLAN1
+  name: plan1
+stages:
+- Default Stage:
+    manual: false
+    final: false
+    jobs:
+    - Default Job
+Default Job:
+  key: JOB1
+  docker:
+    image: thetupakula/alpine3.12
+    volumes:
+      ${bamboo.working.directory}: ${bamboo.working.directory}
+      ${bamboo.tmp.directory}: ${bamboo.tmp.directory}
+    docker-run-arguments: []
+  tasks:
+  - checkout:
+      force-clean-build: 'false'
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        cd eks/scripts
+        wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+        tar -xf rctl-linux-amd64.tar.bz2
+        chmod 0755 rctl
+        chmod +x rafay_eks_provision.sh
+        ./rafay_eks_provision.sh
+      environment: RCTL_API_KEY="rafay_api_key", RCTL_API_SECRET="rafay_secret_key", RCTL_REST_ENDPOINT="console.rafay.dev", RCTL_PROJECT="defaultproject"
+triggers:
+- polling:
+    period: '180'
+branches:
+  create: manually
+  delete: never
+  link-to-jira: true
+notifications: []
+labels: []
+other:
+  concurrent-build-plugin: system-default
+---
+version: 2
+plan:
+  key: EKS-PLAN1
+plan-permissions:
+- users:
+  - root
+  permissions:
+  - view
+  - edit
+  - build
+  - clone
+  - admin
+...

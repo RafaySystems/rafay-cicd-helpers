@@ -1,8 +1,9 @@
 #!/bin/bash
 
-CLUSTER_NAME=`cat eks-cluster.yaml | python3 -c 'import sys, yaml, json; [print(json.dumps(data)) for data in yaml.safe_load_all(sys.stdin.read())]'|jq .metadata.name |head -1| tr \" " " | tr -d "\n"`
+CLUSTER_NAME=`cat ../examples/eks-cluster.yaml |grep name|head -1|cut -d ':' -f2`
 
-./rctl create cluster eks -f eks-cluster.yaml
+
+./rctl create cluster eks -f ../examples/eks-cluster.yaml
 if [ $? -eq 0 ];
 then
     echo "[+] Successfully Created cluster ${CLUSTER_NAME}"

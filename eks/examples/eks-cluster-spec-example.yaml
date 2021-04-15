@@ -53,8 +53,10 @@ nodeGroups:
       'app': 'myapp'
       'owner': 'myowner'
     ssh:
+      allow: true
       publicKeyName: demo
-    sourceSecurityGroupIds:
+    securityGroups:
+      attachIDs:
       - sg-abc134
       - sg-def345
 secretsEncryption:

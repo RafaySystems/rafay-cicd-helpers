@@ -52,6 +52,11 @@ nodeGroups:
     labels:
       'app': 'myapp'
       'owner': 'myowner'
+    ssh:
+      publicKeyName: demo
+    sourceSecurityGroupIds:
+      - sg-abc134
+      - sg-def345
 secretsEncryption:
   # ARN of the KMS key
   keyARN: "arn:aws:kms:us-west-1:000000000000:key/00000000-0000-0000-0000-

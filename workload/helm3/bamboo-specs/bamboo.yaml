@@ -1,0 +1,65 @@
+---
+version: 2
+plan:
+  project-key: HELM1
+  key: PLAN
+  name: helm1
+stages:
+- Default Stage:
+    manual: false
+    final: false
+    jobs:
+    - Default Job
+Default Job:
+  key: JOB1
+  docker:
+    image: rafaysystems/alpine:3.12
+    volumes:
+      ${bamboo.working.directory}: ${bamboo.working.directory}
+      ${bamboo.tmp.directory}: ${bamboo.tmp.directory}
+    docker-run-arguments: []
+  tasks:
+  - checkout:
+      force-clean-build: 'false'
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        rm -f rctl-linux-amd64.tar.bz2
+        rm -f rctl
+        chmod +x rafay_workload.sh
+        ./rafay_workload.sh ${bamboo.WORKLOAD_NAME} ${bamboo.WORKLOAD_NAMESPACE} ${bamboo.WORKLOAD_SPEC}
+      environment:
+        RCTL_API_KEY="${bamboo.rafay_api_key}"
+        RCTL_API_SECRET="${bamboo.rafay_api_secret}"
+        RCTL_REST_ENDPOINT=console.rafay.dev
+        RCTL_PROJECT=defaultproject
+variables:
+  WORKLOAD_NAME: wordpress-demo1
+  WORKLOAD_NAMESPACE: wordpress
+  WORKLOAD_SPEC: ../manifests/workload-spec.yaml
+triggers:
+- polling:
+    period: '180'
+branches:
+  create: manually
+  delete: never
+  link-to-jira: true
+notifications: []
+labels: []
+other:
+  concurrent-build-plugin: system-default
+---
+version: 2
+plan:
+  key: WORKLOAD-helm2
+plan-permissions:
+- users:
+  - kutumba
+  permissions:
+  - view
+  - edit
+  - build
+  - clone
+  - admin
+...

@@ -28,3 +28,8 @@ nodeGroups:
       onDemandBaseCapacity: 0
       onDemandPercentageAboveBaseCapacity: 50
       spotInstancePools: 2
+
+managedNodeGroups:
+- name: managed-spot
+  instanceTypes: ["m5.large","m5.large"]
+  spot: true

@@ -1,0 +1,26 @@
+kind: Cluster
+metadata:
+  name: test-eks
+  project: defaultproject
+spec:
+  type: eks
+  cloudprovider: dev-aws
+  blueprint: default
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: test-eks
+  region: us-west-1
+
+nodeGroups:
+  - name: ng-1
+    instanceType: m5.xlarge
+    desiredCapacity: 2
+
+cloudWatch:
+  clusterLogging:
+    # enable specific types of cluster control plane logs
+    enableTypes: ["audit", "authenticator", "controllerManager"]
+    # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+    # supported special values: "*" and "all"

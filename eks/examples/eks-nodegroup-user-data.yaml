@@ -1,0 +1,48 @@
+kind: Cluster
+metadata:
+  labels:
+    env: dev
+    type: eks-workloads
+  name: test-eks
+  project: defaultproject
+spec:
+  type: eks
+  cloudprovider:dev-aws
+  blueprint: standard-blueprint
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: test-eks
+  region: us-west-1
+
+nodeGroups:
+  - name: ng1-public
+    instanceType: m5.xlarge
+    minSize: 2
+    maxSize: 8
+    volumeSize: 100
+    volumeType: gp3
+    ami: ami-077af249df40d47ac
+    amiFamily: AmazonLinux2
+    labels:
+      nodegroup-type: frontend
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+
+  - name: ng2-private
+    instanceType: m5.large
+    desiredCapacity: 2
+    labels:
+      nodegroup-type: backend
+    taints:
+      special: "true:NoSchedule"
+    privateNetworking: true
+    preBootstrapCommands:
+      # Install SSM agent
+      - yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+      # Download kubectl
+      - curl -L "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o /tmp/kubectl
+      - mv /tmp/kubectl /usr/local/bin/ && chmod +x /usr/local/bin/kubectl

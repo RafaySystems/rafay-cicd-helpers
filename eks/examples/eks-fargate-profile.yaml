@@ -1,0 +1,35 @@
+kind: Cluster
+metadata:
+  name: test-eks
+  project: defaultproject
+spec:
+  type: eks
+  cloudprovider: dev-aws
+  blueprint: default
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: test-eks
+  region: us-west-1
+
+nodeGroups:
+  - name: ng-1
+    instanceType: m5.xlarge
+    desiredCapacity: 2
+
+fargateProfiles:
+  - name: fp-dev
+    selectors:
+      # All workloads in the "dev" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: dev
+  - name: fp-demo
+    selectors:
+      # All workloads in the "demo" Kubernetes namespace matching the following
+      # label selectors will be scheduled onto Fargate:
+      - namespace: demo
+        labels:
+          env: demo
+    tags:
+      env: demo

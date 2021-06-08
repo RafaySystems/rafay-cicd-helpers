@@ -1,9 +1,9 @@
 #!/bin/bash
 
-CLUSTER_NAME=`cat ../examples/eks-cluster.yaml |grep name|head -1|cut -d ':' -f2`
+CLUSTER_NAME=`cat ../examples/eks-test-cluster.yaml |grep name|head -1|cut -d ':' -f2`
 
 
-./rctl create cluster eks -f ../examples/eks-cluster.yaml
+./rctl create cluster eks -f ../examples/eks-test-cluster.yaml
 if [ $? -eq 0 ];
 then
     echo "[+] Successfully Created cluster ${CLUSTER_NAME}"

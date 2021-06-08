@@ -1,0 +1,21 @@
+# Usage: rctl create cluster eks -f ./test-eks-cluster.yaml
+
+kind: Cluster
+metadata:
+  name: test-eks
+  project: david-private
+spec:
+  type: eks
+  cloudprovider: dreta-eks-role-latest
+  blueprint: default
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: test-eks
+  region: us-west-1
+
+nodeGroups:
+  - name: ng-1
+    instanceType: t3.large
+    desiredCapacity: 1

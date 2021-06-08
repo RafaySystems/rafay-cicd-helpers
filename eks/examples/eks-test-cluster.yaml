@@ -16,6 +16,6 @@ metadata:
   region: us-west-1
 
 nodeGroups:
-  - name: ng-1
+  - name: test-ng-1
     instanceType: t3.large
     desiredCapacity: 1

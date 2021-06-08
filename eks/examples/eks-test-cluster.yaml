@@ -2,7 +2,7 @@
 
 kind: Cluster
 metadata:
-  name: test-eks
+  name: dreta-test-eks
   project: david-private
 spec:
   type: eks
@@ -12,10 +12,10 @@ spec:
 apiVersion: rafay.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: test-eks
+  name: dreta-test-eks
   region: us-west-1
 
 nodeGroups:
-  - name: test-ng-1
+  - name: dreta-test-ng-1
     instanceType: t3.large
     desiredCapacity: 1

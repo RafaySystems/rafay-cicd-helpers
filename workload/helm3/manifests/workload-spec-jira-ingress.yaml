@@ -1,0 +1,7 @@
+name: jira
+namespace: jira
+project: david-private
+type: Helm3
+clusters: "webinar-fargate-test"
+payload: "./jira-software-4.4.0.tgz"
+values: "./jira-custom-values-ingress.yaml"

@@ -1,16 +1,16 @@
 kind: Cluster
 metadata:
-  name: br-fargate-test
+  name: br-fargate-test-dev
   project: dev
 spec:
   type: eks
   cloudprovider: aws-broadridge-poc
-  blueprint: nginx
+  blueprint: default
 ---
 apiVersion: rafay.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: br-fargate-test
+  name: br-fargate-test-dev
   region: us-west-1
   version: "1.19"
   

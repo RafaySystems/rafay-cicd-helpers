@@ -1,7 +1,7 @@
 kind: Cluster
 metadata:
   name: webinar-fargate-test
-  project: webinar
+  project: david-private
 spec:
   type: eks
   cloudprovider: dreta-eks-role-latest
@@ -22,6 +22,6 @@ nodeGroups:
 fargateProfiles:
   - name: fp-dev
     selectors:
-      # All workloads in the "dev" Kubernetes namespace will be
+      # All workloads in the "jira" Kubernetes namespace will be
       # scheduled onto Fargate:
       - namespace: jira

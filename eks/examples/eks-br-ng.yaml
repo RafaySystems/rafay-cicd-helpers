@@ -3,7 +3,7 @@
 kind: Cluster
 metadata:
   name: br-test-eks
-  project: broadridge-poc
+  project: prod
 spec:
   type: eks
   cloudprovider: aws-broadridge-poc

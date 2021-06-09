@@ -1,7 +1,7 @@
 kind: Cluster
 metadata:
   name: br-fargate-test
-  project: broadridge-poc
+  project: dev
 spec:
   type: eks
   cloudprovider: aws-broadridge-poc
@@ -16,7 +16,7 @@ metadata:
   
 nodeGroups:
   - name: fargate-ng-11
-    instanceType: t3.large
+    instanceType: t3.xlarge
     desiredCapacity: 1
 
 fargateProfiles:

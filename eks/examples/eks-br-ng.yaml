@@ -2,17 +2,17 @@
 
 kind: Cluster
 metadata:
-  name: br-test-eks
+  name: br-test-eks-prod
   project: prod
 spec:
   type: eks
   cloudprovider: aws-broadridge-poc
-  blueprint: nginx
+  blueprint: default
 ---
 apiVersion: rafay.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: br-test-eks
+  name: br-test-eks-prod
   region: us-west-1
 
 nodeGroups:

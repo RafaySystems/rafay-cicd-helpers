@@ -1,6 +1,6 @@
 name: jira
 namespace: jira
-project: david-private
+project: broadridge-poc
 type: Helm3
 clusters: "webinar-fargate-test"
 payload: "./jira-software-4.4.0.tgz"

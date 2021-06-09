@@ -1,0 +1,27 @@
+kind: Cluster
+metadata:
+  name: webinar-fargate-test
+  project: webinar
+spec:
+  type: eks
+  cloudprovider: dreta-eks-role-latest
+  blueprint: default
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: webinar-fargate-test
+  region: us-west-1
+  version: "1.19"
+  
+nodeGroups:
+  - name: fargate-ng-1
+    instanceType: t3.large
+    desiredCapacity: 1
+
+fargateProfiles:
+  - name: fp-dev
+    selectors:
+      # All workloads in the "dev" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: jira

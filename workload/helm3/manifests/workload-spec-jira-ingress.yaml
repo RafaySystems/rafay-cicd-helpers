@@ -2,6 +2,6 @@ name: jira
 namespace: jira
 project: broadridge-poc
 type: Helm3
-clusters: "webinar-fargate-test"
+clusters: "br-fargate-test"
 payload: "./jira-software-4.4.0.tgz"
 values: "./jira-ingress-values.yaml"

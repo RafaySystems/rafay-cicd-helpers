@@ -17,5 +17,5 @@ metadata:
 
 nodeGroups:
   - name: br-test-ng-1
-    instanceType: t3.large
+    instanceType: t3.xlarge
     desiredCapacity: 1

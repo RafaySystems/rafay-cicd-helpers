@@ -1,0 +1,21 @@
+# Usage: rctl create cluster eks -f ./test-eks-cluster.yaml
+
+kind: Cluster
+metadata:
+  name: br-test-eks
+  project: broadridge-poc
+spec:
+  type: eks
+  cloudprovider: aws-broadridge-poc
+  blueprint: nginx
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: br-test-eks
+  region: us-west-1
+
+nodeGroups:
+  - name: br-test-ng-1
+    instanceType: t3.large
+    desiredCapacity: 1

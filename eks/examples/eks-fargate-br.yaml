@@ -1,1 +1,27 @@
-test
+kind: Cluster
+metadata:
+  name: br-fargate-test
+  project: broadridge-poc
+spec:
+  type: eks
+  cloudprovider: aws-broadridge-poc
+  blueprint: nginx
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: br-fargate-test-2
+  region: us-west-1
+  version: "1.19"
+  
+nodeGroups:
+  - name: fargate-ng-11
+    instanceType: t3.large
+    desiredCapacity: 1
+
+fargateProfiles:
+  - name: fp-dev
+    selectors:
+      # All workloads in the "jira" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: jira

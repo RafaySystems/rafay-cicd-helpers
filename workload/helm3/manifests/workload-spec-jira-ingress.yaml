@@ -2,6 +2,6 @@ name: jira-ingress
 namespace: jira
 project: prod
 type: Helm3
-clusters: "br-fargate-test"
+clusters: "br-fargate-test-prod"
 payload: "./jira-software-4.4.0.tgz"
 values: "./jira-ingress-values.yaml"

@@ -5,7 +5,7 @@ metadata:
 spec:
   type: eks
   cloudprovider: aws-broadridge-poc
-  blueprint: default
+  blueprint: nginx
 ---
 apiVersion: rafay.io/v1alpha5
 kind: ClusterConfig

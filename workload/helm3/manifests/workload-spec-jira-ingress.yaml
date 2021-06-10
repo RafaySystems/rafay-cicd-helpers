@@ -1,4 +1,4 @@
-name: jira
+name: jira-ingress
 namespace: jira
 project: broadridge-poc
 type: Helm3

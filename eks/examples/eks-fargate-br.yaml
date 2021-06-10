@@ -10,7 +10,7 @@ spec:
 apiVersion: rafay.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: br-fargate-test-dev
+  name: br-fargate-test-prod
   region: us-west-1
   version: "1.19"
   

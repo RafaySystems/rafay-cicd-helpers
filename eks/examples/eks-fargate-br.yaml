@@ -1,7 +1,7 @@
 kind: Cluster
 metadata:
-  name: br-fargate-test-dev
-  project: dev
+  name: br-fargate-test-prod
+  project: prod
 spec:
   type: eks
   cloudprovider: aws-broadridge-poc

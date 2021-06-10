@@ -2,6 +2,6 @@ name: jira-lb
 namespace: jira
 project: dev
 type: Helm3
-clusters: "webinar-fargate-test"
+clusters: "br-test-eks-dev"
 payload: "./jira-software-4.4.0.tgz"
 values: "./jira-custom-values.yaml"

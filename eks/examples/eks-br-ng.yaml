@@ -2,7 +2,7 @@
 
 kind: Cluster
 metadata:
-  name: br-test-eks-prod
+  name: br-test-eks-dev
   project: dev
 spec:
   type: eks

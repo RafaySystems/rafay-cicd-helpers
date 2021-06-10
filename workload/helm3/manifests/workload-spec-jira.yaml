@@ -1,4 +1,4 @@
-name: jira
+name: jira-lb
 namespace: jira
 project: david-private
 type: Helm3

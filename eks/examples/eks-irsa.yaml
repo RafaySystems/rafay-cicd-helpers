@@ -1,0 +1,98 @@
+kind: Cluster
+metadata:
+  name: test-eks
+  project: defaultproject
+spec:
+  blueprint: default
+  cloudprovider: dev-aws
+  type: eks
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: test-eks
+  region: us-west-1
+  version: "1.19"
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - attachPolicyARNs:
+    - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+    metadata:
+      labels:
+        aws-usage: application
+      name: s3-reader
+      namespace: backend-apps
+  - metadata:
+      name: aws-load-balancer-controller
+      namespace: kube-system
+    wellKnownPolicies:
+      awsLoadBalancerController: true
+  - metadata:
+      name: external-dns
+      namespace: kube-system
+    wellKnownPolicies:
+      externalDNS: true
+  - metadata:
+      name: cert-manager
+      namespace: cert-manager
+    wellKnownPolicies:
+      certManager: true
+  - metadata:
+      labels:
+        aws-usage: cluster-ops
+      name: cluster-autoscaler
+      namespace: kube-system
+    wellKnownPolicies:
+      autoScaler: true
+  - metadata:
+      name: build-service
+      namespace: ci-cd
+    wellKnownPolicies:
+      imageBuilder: true
+  - attachPolicyARNs:
+    - arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess
+    - arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess
+    metadata:
+      labels:
+        aws-usage: application
+      name: cache-access
+      namespace: backend-apps
+  - attachPolicy:
+      Statement:
+      - Action:
+        - autoscaling:DescribeAutoScalingGroups
+        - autoscaling:DescribeAutoScalingInstances
+        - autoscaling:DescribeLaunchConfigurations
+        - autoscaling:DescribeTags
+        - autoscaling:SetDesiredCapacity
+        - autoscaling:TerminateInstanceInAutoScalingGroup
+        - ec2:DescribeLaunchTemplateVersions
+        Effect: Allow
+        Resource: '*'
+      Version: "2012-10-17"
+    metadata:
+      name: autoscaler-service
+      namespace: kube-system
+  withOIDC: true
+
+nodeGroups:
+- amiFamily: AmazonLinux2
+  desiredCapacity: 1
+  iam:
+    withAddonPolicies:
+      autoScaler: true
+      imageBuilder: true
+  instanceType: t3.xlarge
+  maxSize: 2
+  minSize: 1
+  name: ng-1
+  volumeSize: 80
+  volumeType: gp3
+vpc:
+  cidr: 192.168.0.0/16
+  clusterEndpoints:
+    privateAccess: true
+    publicAccess: false
+  nat:
+    gateway: Single

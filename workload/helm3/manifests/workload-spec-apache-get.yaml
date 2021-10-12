@@ -2,7 +2,7 @@ clusters: dreta-10-06
 driftaction: DetectAndNotify
 name: apache-git-jenkins
 namespace: apache
-project: defaultproject
+project: davidprivate
 repo_artifact_meta:
   git:
     repoArtifactFiles:

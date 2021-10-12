@@ -1,0 +1,17 @@
+## Service paramaters
+##
+service:
+  annotations:
+    ## service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  ## Service type
+  ##
+  type: LoadBalancer
+  #type: NodePort
+  ## HTTP Port
+  ##
+  port: 80
+  ## HTTPS Port
+  ##
+  httpsPort: 443
+  ##
+replicaCount: 2

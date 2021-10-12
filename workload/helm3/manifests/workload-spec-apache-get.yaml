@@ -1,0 +1,17 @@
+clusters: dreta-10-06
+driftaction: DetectAndNotify
+name: apache-git-jenkins
+namespace: apache
+project: defaultproject
+repo_artifact_meta:
+  git:
+    repoArtifactFiles:
+    - fileType: HelmChartFile
+      name: nginx
+      relPath: workload/helm3/manifests/apache-8.0.0-rafay.tgz
+    - fileType: HelmValuesFile
+      name: value
+      relPath: workload/helm3/manifests/apache-custom-values.yaml
+    revision: master
+repository_ref: training
+type: Helm

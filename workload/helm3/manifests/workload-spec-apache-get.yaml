@@ -13,5 +13,5 @@ repo_artifact_meta:
       name: value
       relPath: workload/helm3/manifests/apache-custom-values.yaml
     revision: master
-repository_ref: training
+repository_ref: cicd-helpers
 type: Helm

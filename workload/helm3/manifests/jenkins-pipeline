@@ -1,0 +1,76 @@
+#!/usr/bin/env groovy
+
+
+pipeline {
+  agent any
+  environment{
+      RCTL_API_KEY='d725df3726d9e18eddb553ec907d4c667b9d6c93'
+      RCTL_API_SECRET='ca45c3726d6c397c4aa7af8ee1a8ef73d32d26744174cc41b7e1c4e459807630'
+      RCTL_REST_ENDPOINT="console.rafay.dev"
+      RCTL_PROJECT="davidprivate"
+      WORKLOAD_NAME="apache-git-jenkins"
+      WORKLOAD_NAMESPACE="apache"
+  }
+  stages {
+   stage("Checkout Code") {
+      steps {
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RafaySystems/rafay-cicd-helpers.git']]])
+      }
+    }
+
+   stage("Create and Publish Workload") {
+      steps {
+                sh label: '', script: '''#!/bin/bash
+            rm -f rctl-linux-amd64.tar.bz2
+            wget -q https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+            tar -xf rctl-linux-amd64.tar.bz2
+            chmod 0755 rctl
+            LookupWorkload () {
+            local workload match="$1"
+            shift
+            for workload; do [[ "$workload" == "$match" ]] && return 0; done
+            return 1
+            }
+            #./rctl get namespace > /tmp/namespace
+            #grep -i $WORKLOAD_NAMESPACE /tmp/namespace > /dev/null 2>&1
+            #if [ $? -eq 1 ];
+            #then
+            #    ./rctl create namespace ./workload/helm3/manifests/jira-ns.yaml
+            #fi
+            #rm /tmp/namespace
+            wl_tmp=`./rctl get workload -o json | jq '.result[]|.name' |cut -d'"' -f2`
+            WL_TMP_ARRAY=( $wl_tmp )
+            LookupWorkload $WORKLOAD_NAME "${WL_TMP_ARRAY[@]}"
+            if [ $? -eq 1 ];
+            then
+                echo "Creating workload"
+                ./rctl create workload ./workload/helm3/manifests/workload-spec-apache-get.yaml
+            else
+                echo "Workload exists"
+            fi
+            ./rctl create pipeline -f ./workload/helm3/manifests/gitops-pipeline.yaml
+            ./rctl create trigger -f ./workload/helm3/manifests/trigger.yaml
+            #./rctl publish workload $WORKLOAD_NAME
+            #workload_status="Not Ready"
+            #workload_status_iterations=1
+            #while [ "$workload_status" != "Ready" ];
+            #do
+            #    workload_status=`./rctl status workload $WORKLOAD_NAME -o json|jq .result[].status|tr -d '"'`
+            #    echo $workload_status
+            #    sleep 30
+            #    if [ $workload_status_iterations -ge 30 ];
+            #    then
+            #        break
+            #    fi
+            #    if [ "$workload_status" = "Failed" ];
+            #    then
+            #        echo "Workload Deployment Failed"
+            #        break
+            #    fi
+            #    workload_status_iterations=$((workload_status_iterations+1))
+            #done
+            '''
+      }
+    }
+  }
+}

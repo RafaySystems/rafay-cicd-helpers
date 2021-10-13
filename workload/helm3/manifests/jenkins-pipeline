@@ -4,10 +4,10 @@
 pipeline {
   agent any
   environment{
-      RCTL_API_KEY='d725df3726d9e18eddb553ec907d4c667b9d6c93'
-      RCTL_API_SECRET='ca45c3726d6c397c4aa7af8ee1a8ef73d32d26744174cc41b7e1c4e459807630'
+      RCTL_API_KEY=''
+      RCTL_API_SECRET=''
       RCTL_REST_ENDPOINT="console.rafay.dev"
-      RCTL_PROJECT="davidprivate"
+      RCTL_PROJECT="defaultproject"
       WORKLOAD_NAME="apache-git-jenkins"
       WORKLOAD_NAMESPACE="apache"
   }

@@ -1,0 +1,14 @@
+apiVersion: pipeline.rafay.dev/v2
+kind: Pipeline
+metadata:
+  name: apache-git-pipeline
+  project: davidprivate
+spec:
+  edges: []
+  stages:
+  - name: stage1
+    stageConfig:
+      deployment:
+        workloadRef: apache-git-jenkins
+      onFailure: Stop
+    stageType: DeployWorkloadStage

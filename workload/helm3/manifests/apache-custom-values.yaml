@@ -14,4 +14,4 @@ service:
   ##
   httpsPort: 443
   ##
-replicaCount: 2
+replicaCount: 3

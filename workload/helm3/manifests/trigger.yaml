@@ -9,7 +9,7 @@ spec:
   repositoryRef: training
   triggerConfig:
     periodicSCM:
-      cronExpression: */5 * * * *
+      cronExpression: "*/5 * * * *"
   repositoryConfig:
     git:
       paths:

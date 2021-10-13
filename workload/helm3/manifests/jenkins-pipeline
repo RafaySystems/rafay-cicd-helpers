@@ -52,7 +52,7 @@ pipeline {
             ./rctl create pipeline -f ./workload/helm3/manifests/gitops-pipeline.yaml
             ./rctl create trigger -f ./workload/helm3/manifests/trigger.yaml
             ./rctl activate pipeline $PIPELINE_NAME
-            ./rctl start pipeline --name $PIPELINE_NAME
+            ./rctl start pipeline $PIPELINE_NAME
             #./rctl publish workload $WORKLOAD_NAME
             #workload_status="Not Ready"
             #workload_status_iterations=1

@@ -4,12 +4,12 @@ metadata:
   name: apache-trigger
   project: davidprivate
 spec:
-  triggerType: WebhookTrigger
+  triggerType: PeriodicSCMTrigger
   pipelineRef: apache-git-pipeline
   repositoryRef: training
   triggerConfig:
-    webhook:
-      configType: Github
+    periodicSCM:
+      cronExpression: */5 * * * *
   repositoryConfig:
     git:
       paths:

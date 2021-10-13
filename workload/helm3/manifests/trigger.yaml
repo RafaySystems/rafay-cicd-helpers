@@ -13,5 +13,5 @@ spec:
   repositoryConfig:
     git:
       paths:
-      - training/workloads/apache-custom-values.yaml
+      - workload/helm3/manifests/apache-custom-values.yaml
       revision: master

@@ -1,0 +1,24 @@
+Kind: Pipeline
+apiVersion: pipeline.rafay.dev/v2
+metadata:
+  name: rctl-pipeline
+spec:
+  stages:
+  - name: approval
+    stageType: ApprovalStage
+    stageConfig:
+      approval:
+        approvalType: Email
+        emails:
+        - SUPPORT@EMAIL
+        timeout: 5m
+      onFailure: Stop
+  - name: workload-deploy
+    stageType: DeployWorkloadStage
+    stageConfig:
+      deployment:
+        workloadRef: WORKLOAD_NAME
+      onFailure: Stop
+  edges:
+  - source: approval
+    target: workload-deploy

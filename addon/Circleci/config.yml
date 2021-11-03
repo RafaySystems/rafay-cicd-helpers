@@ -18,8 +18,5 @@ jobs:
                 tar -xf rctl-linux-amd64.tar.bz2
                 chmod 0755 rctl
                 ARGOCD_NAMESPACE="argocd"
-                ADDON_TYPE=`cat addon/examples/argocd-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.template.type | tr \" " " | awk '{print $1}' | tr -d "\n"`
-                ADDON_NAME=`cat addon/examples/argocd-spec.yaml |python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' | jq .spec.addon | tr \" " " | awk '{print $1}' | tr -d "\n"`
                 ./rctl create namespace $ARGOCD_NAMESPACE
-                ./rctl create addon $ADDON_TYPE $ADDON_NAME --namespace $ARGOCD_NAMESPACE
                 ./rctl create addon version -f addon/examples/argocd-spec.yaml

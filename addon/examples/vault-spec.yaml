@@ -8,9 +8,11 @@ spec:
   # addon name
   addon: vault-server
   # template for different addon types
+  # namespace name
+  namespace: demo
   template:
     # type of addon
-    type: helm3
+    type: Helm3
     chartFile: addon/examples/vault-0.9.1.tgz
     # values file is optional
     valuesFile: addon/examples/vault-values.yaml

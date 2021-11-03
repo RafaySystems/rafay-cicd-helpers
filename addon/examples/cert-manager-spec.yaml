@@ -8,9 +8,11 @@ metadata:
 spec:
   # addon name
   addon: cert-manager
+  # namespace name
+  namespace: cert-manager
   # template for different addon types
   template:
     # type of addon
-    type: yaml
+    type: NativeYaml
     yamlFile: addon/examples/cert-manager.yaml
 

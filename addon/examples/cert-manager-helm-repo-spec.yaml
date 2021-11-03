@@ -1,0 +1,13 @@
+kind: AddonVersion
+metadata:
+  name: v1.6.1
+spec:
+  addon: cert-manager
+  namespace: cert-manager
+  template:
+    type: Helm3
+    repository_ref: jetstack
+    repo_artifact_meta:
+      helm:
+        chartName: cert-manager
+        tag: v1.6.1

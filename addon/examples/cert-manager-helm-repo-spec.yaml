@@ -11,4 +11,4 @@ spec:
       helm:
         chartName: cert-manager
         tag: v1.6.1
-    valuesFile: cert-manager-values.yaml
+    valuesFile: addon/examples/cert-manager-values.yaml

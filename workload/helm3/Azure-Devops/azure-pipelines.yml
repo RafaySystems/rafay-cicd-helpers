@@ -1,0 +1,62 @@
+# Starter pipeline
+
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+variables:
+  workload_yaml: ./workload/helm3/manifests/workload-spec.yaml
+  workload: wordpress-demo1
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+- script: |
+    export RCTL_API_KEY=$(RCTL_API_KEY)
+    export RCTL_API_SECRET=$(RCTL_API_SECRET)
+    wget -O ${HOME}/rctl-linux-amd64.tar.bz2 https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
+    tar -C ${HOME} -xf ${HOME}/rctl-linux-amd64.tar.bz2
+    chmod 0755 ${HOME}/rctl
+    LookupWorkload () {
+      local workload match="$1"
+      shift
+      for workload; do [[ "$workload" == "$match" ]] && return 0; done
+      return 1
+    }
+    wl_tmp=`./rctl get workload -o json | jq '.result[]|.name' |cut -d'"' -f2`
+    WL_TMP_ARRAY=( $wl_tmp )
+    set +e
+    LookupWorkload $WORKLOAD_NAME "${WL_TMP_ARRAY[@]}"
+    if [ $? -eq 1 ]; then
+     set -e
+     ./rctl create workload $(workload_yaml)
+    else
+     ./rctl update workload $(workload_yaml)
+    fi
+    ${HOME}/rctl publish workload $(workload)
+    workload_status="Not Ready"
+    workload_status_iterations=1
+    while [ "$workload_status" != "Ready" ];
+    do
+      workload_status=`${HOME}/rctl status workload $(workload) -o json|jq .result[].status|tr -d '"'`
+      echo $workload_status
+      sleep 30
+      if [ $workload_status_iterations -ge 30 ];
+      then
+        break
+      fi
+      if [ "$workload_status" = "Failed" ];
+      then
+        echo "Workload Deployment Failed"
+        break
+      fi
+      workload_status_iterations=$((workload_status_iterations+1))
+    done
+  displayName: 'create and publish workload'
+
+

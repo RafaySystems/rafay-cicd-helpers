@@ -31,7 +31,7 @@ steps:
     wl_tmp=`./rctl get workload -o json | jq '.result[]|.name' |cut -d'"' -f2`
     WL_TMP_ARRAY=( $wl_tmp )
     set +e
-    LookupWorkload $WORKLOAD_NAME "${WL_TMP_ARRAY[@]}"
+    LookupWorkload $workload "${WL_TMP_ARRAY[@]}"
     if [ $? -eq 1 ]; then
      set -e
      ./rctl create workload $(workload_yaml)

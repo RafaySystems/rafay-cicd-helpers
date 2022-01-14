@@ -9,5 +9,7 @@ spec:
   type: imported
   # blueprint below is optional, if not specified, default value is "default"
   blueprint: default
+  # blueprint version is optional, if not specified latest version of the bleuprint will be used
+  blueprintversion: Latest
   # location, can be custom or predefined
   location: aws/us-east-1

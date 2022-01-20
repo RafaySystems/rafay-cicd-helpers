@@ -1,0 +1,13 @@
+# Usage: rctl create node-group eks -f node-group-config.yml
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: test-eks
+  region: us-west-1
+
+managedNodeGroups:
+  - name: ng-custom-ami-1
+    ami: ami-0e6f918b254002f1a
+    minSize: 2
+    maxSize: 4

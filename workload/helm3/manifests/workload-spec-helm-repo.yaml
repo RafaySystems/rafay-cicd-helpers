@@ -1,0 +1,11 @@
+name: certmanager-demo
+namespace: cert-manager
+project: defaultproject
+type: Helm3
+clusters: "eks-demo3"
+repository_ref: jetstack
+repo_artifact_meta:
+  helm:
+    chartName: cert-manager
+    tag: v1.6.1
+values: addon/examples/cert-manager-values.yaml

@@ -1,0 +1,13 @@
+name: speedtest-demo
+namespace: speedtest
+project: defaultproject
+type: NativeYaml
+clusters: "eks-demo3"
+repository_ref: cicd-helpers
+repo_artifact_meta:
+  git:
+    revision: master
+    repoArtifactFiles:
+    - name: speetest
+      relPath: ./speedtest.yaml
+      fileType: K8sYAMLFileType

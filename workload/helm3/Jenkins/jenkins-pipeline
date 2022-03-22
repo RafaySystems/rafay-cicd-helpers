@@ -41,7 +41,7 @@ pipeline {
                 NS_CHECK_CNT=1
                 while /bin/true
                 do
-                NAMESPACE_HEALTH=$(./rctl get namespace $WORKLOAD_NAMESPACE -o json | jq '.status.deployedClusters[].reason' | grep -v '"deployed"'| wc -l) 
+                NAMESPACE_HEALTH=$(./rctl get namespace $WORKLOAD_NAMESPACE -o json | jq '.status.deployedClusters[].reason' | grep -v '\"deployed\"'| wc -l) 
                 if [ $NS_CHECK_CNT -ge 50 ]
                 then
                 echo " !! Unable to publish namespace $WORKLOAD_NAMESPACE to clusters !!" && exit 1

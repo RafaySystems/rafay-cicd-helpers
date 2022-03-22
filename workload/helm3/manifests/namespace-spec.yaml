@@ -1,13 +1,2 @@
-metadata:
-  name: wordpress
-  displayname: wordpress-poc
-spec:
-  type: RafayWizard
-  placement:
-    clusterLabels:
-    - key: rafay.dev/clusterName
-      value: vijayekstest10032022
-    clusterSelector: ""
-    driftAction: DriftReconcillationActionNotSet
-    nodeGroupingKeys: null
-    placementType: ClusterSpecific  
+name: wordpress
+decription: wordpress-poc

@@ -38,6 +38,21 @@ pipeline {
                 ./rctl create namespace -f ./workload/helm3/manifests/namespace-spec.yaml
                 sleep 10
                 ./rctl publish namespace $WORKLOAD_NAMESPACE
+                NS_CHECK_CNT=1
+                while /bin/true
+                do
+                NAMESPACE_HEALTH=(./rctl get namespace $WORKLOAD_NAMESPACE -o json | jq '.status.deployedClusters[].reason' | grep -v '"deployed"'| wc -l) 
+                if [ $NS_CHECK_CNT -ge 50 ]
+                then
+                echo " !! Unable to publish namespace $WORKLOAD_NAMESPACE to clusters !!" && exit 1
+                fi
+                if [ $NAMESPACE_HEALTH -eq 0 ]
+                then
+                break
+                else
+                NS_CHECK_CNT=$(($NS_CHECK_CNT + 1))
+                if
+                sleep 10
             fi
       
             rm /tmp/namespace
@@ -64,7 +79,7 @@ pipeline {
                 fi
                 if [ "$workload_status" = "Failed" ];
                 then
-                    echo "Workload Deployment Failed"
+                    echo "Workload Deployment Failed" && exit 1
                     break
                 fi
                 workload_status_iterations=$((workload_status_iterations+1))

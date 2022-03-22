@@ -36,7 +36,10 @@ pipeline {
             if [ $? -eq 1 ];
             then
                 ./rctl create namespace -f ./workload/helm3/manifests/namespace-spec.yaml
+                sleep 10
+                ./rctl publish namespace $WORKLOAD_NAMESPACE
             fi
+      
             rm /tmp/namespace
             wl_tmp=`./rctl get workload -o json | jq '.result[]|.name' |cut -d'"' -f2`
             WL_TMP_ARRAY=( $wl_tmp )

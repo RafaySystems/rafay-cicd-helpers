@@ -6,15 +6,15 @@ pipeline {
   environment{
       RCTL_API_KEY=credentials('rafay_api_key')
       RCTL_API_SECRET=credentials('rafay_secret_key')
-      RCTL_REST_ENDPOINT="console.stage.rafay.dev"
-      RCTL_PROJECT="vijayspractice"
+      RCTL_REST_ENDPOINT="console.rafay.dev"
+      RCTL_PROJECT="defaultproject"
       WORKLOAD_NAME="wordpress-demo"
       WORKLOAD_NAMESPACE="wordpress"
   }
   stages {
    stage("Checkout Code") {
       steps {
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/vijays-rafay/rafay-cicd-helpers']]])
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RafaySystems/rafay-cicd-helpers']]])
       }
     }
 
@@ -35,30 +35,8 @@ pipeline {
             grep -i $WORKLOAD_NAMESPACE /tmp/namespace > /dev/null 2>&1
             if [ $? -eq 1 ];
             then
-                ./rctl create namespace -f ./workload/helm3/manifests/namespace-spec.yaml
-                sleep 10
-                ./rctl publish namespace $WORKLOAD_NAMESPACE
-                sleep 10
-                NS_CHECK_CNT=1
-                while /bin/true
-                do
-                NAMESPACE_ASSIGNED_CLUSTERS=$(./rctl get namespace $WORKLOAD_NAMESPACE -o json | jq '.status.assignedClusters | length') 
-                NAMESPACE_DEPLOYED_CLUSTERS=$(./rctl get namespace $WORKLOAD_NAMESPACE -o json | jq '.status.deployedClusters | length') 
-                if [ $NS_CHECK_CNT -ge 50 ]
-                then
-                echo " !! Unable to publish namespace $WORKLOAD_NAMESPACE to clusters !!" && exit 1
-                fi
-                if [ $NAMESPACE_ASSIGNED_CLUSTERS -eq $NAMESPACE_DEPLOYED_CLUSTERS ]
-                then
-                break
-                else
-                NS_CHECK_CNT=$(($NS_CHECK_CNT + 1))
-                echo " !! Publishing namespace $WORKLOAD_NAMESPACE to clusters !! "
-                fi
-                sleep 10
-                done
+                ./rctl create namespace ./workload/k8s-yaml/manifests/namespace-spec.yaml
             fi
-      
             rm /tmp/namespace
             wl_tmp=`./rctl get workload -o json | jq '.result[]|.name' |cut -d'"' -f2`
             WL_TMP_ARRAY=( $wl_tmp )
@@ -83,7 +61,7 @@ pipeline {
                 fi
                 if [ "$workload_status" = "Failed" ];
                 then
-                    echo "Workload Deployment Failed" && exit 1
+                    echo "Workload Deployment Failed"
                     break
                 fi
                 workload_status_iterations=$((workload_status_iterations+1))
@@ -93,4 +71,3 @@ pipeline {
     }
   }
 }
-

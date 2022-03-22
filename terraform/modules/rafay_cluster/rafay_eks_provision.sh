@@ -18,13 +18,18 @@ CLUSTER_STATUS_ITERATIONS=1
 CLUSTER_HEALTH_ITERATIONS=1
 CLUSTER_STATUS=`./rctl get cluster ${CLUSTER_NAME} -o json |jq '.status'|cut -d'"' -f2`
 if [ -z $CLUSTER_STATUS ]
-then
-echo " !! Unable to fecth cluster status !! "
-echo " !! Cluster Provisioning Failed !! " && exit -1
+ then
+  echo " !! Unable to fecth cluster status !! "
+  echo " !! Cluster Provisioning Failed !! " && exit -1
 fi
 while [ "$CLUSTER_STATUS" != "READY" ]
 do
   sleep 60
+  if [ -z $CLUSTER_STATUS ]
+   then
+    echo " !! Unable to fecth cluster status !! "
+    echo " !! Cluster Provisioning Failed !! " && exit -1
+  fi
   if [ $CLUSTER_STATUS_ITERATIONS -ge 50 ];
   then
     break

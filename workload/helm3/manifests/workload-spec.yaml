@@ -1,4 +1,4 @@
-name: wordpress-demo1
+name: wordpress-demo
 namespace: wordpress
 project: vijayspractice
 type: Helm3

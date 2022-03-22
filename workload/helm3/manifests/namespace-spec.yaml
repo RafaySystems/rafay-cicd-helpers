@@ -1,2 +1,5 @@
-name: wordpress
-displayname: wordpress-poc
+metadata:
+  name: wordpress
+  displayname: wordpress-poc
+spec:
+  type: RafayWizard

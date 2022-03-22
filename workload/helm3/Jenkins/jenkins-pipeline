@@ -6,15 +6,15 @@ pipeline {
   environment{
       RCTL_API_KEY=credentials('rafay_api_key')
       RCTL_API_SECRET=credentials('rafay_secret_key')
-      RCTL_REST_ENDPOINT="console.rafay.dev"
-      RCTL_PROJECT="defaultproject"
+      RCTL_REST_ENDPOINT="console.stage.rafay.dev"
+      RCTL_PROJECT="vijayspractice"
       WORKLOAD_NAME="wordpress-demo"
       WORKLOAD_NAMESPACE="wordpress"
   }
   stages {
    stage("Checkout Code") {
       steps {
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RafaySystems/rafay-cicd-helpers']]])
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/vijays-rafay/rafay-cicd-helpers']]])
       }
     }
 

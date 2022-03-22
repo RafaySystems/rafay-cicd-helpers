@@ -53,6 +53,7 @@ pipeline {
                 NS_CHECK_CNT=$(($NS_CHECK_CNT + 1))
                 if
                 sleep 10
+                done
             fi
       
             rm /tmp/namespace

@@ -35,7 +35,7 @@ pipeline {
             grep -i $WORKLOAD_NAMESPACE /tmp/namespace > /dev/null 2>&1
             if [ $? -eq 1 ];
             then
-                ./rctl create namespace ./workload/k8s-yaml/manifests/namespace-spec.yaml
+                ./rctl create namespace ./workload/helm3/manifests/namespace-spec.yaml
             fi
             rm /tmp/namespace
             wl_tmp=`./rctl get workload -o json | jq '.result[]|.name' |cut -d'"' -f2`

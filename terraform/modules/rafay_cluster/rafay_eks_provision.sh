@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 curl -s -o rctl-linux-amd64.tar.bz2 https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-amd64.tar.bz2
 tar -xf rctl-linux-amd64.tar.bz2
 chmod 0755 rctl
@@ -11,15 +11,25 @@ sed -i "s/AWS/$CREDENTIALS_NAME/g" /tmp/eks-ckuster.yaml
 ./rctl create cluster eks -f /tmp/eks-ckuster.yaml
 if [ $? -eq 0 ];
 then
-    echo "[+] Successfully Created cluster ${CLUSTER_NAME}"
+    echo "[+] Successfully submitted creation request for cluster ${CLUSTER_NAME}"
 fi
 
 CLUSTER_STATUS_ITERATIONS=1
 CLUSTER_HEALTH_ITERATIONS=1
 CLUSTER_STATUS=`./rctl get cluster ${CLUSTER_NAME} -o json |jq '.status'|cut -d'"' -f2`
+if [ -z $CLUSTER_STATUS ]
+ then
+  echo " !! Unable to fecth cluster status !! "
+  echo " !! Cluster Provisioning Failed !! " && exit -1
+fi
 while [ "$CLUSTER_STATUS" != "READY" ]
 do
   sleep 60
+  if [ -z $CLUSTER_STATUS ]
+   then
+    echo " !! Unable to fecth cluster status !! "
+    echo " !! Cluster Provisioning Failed !! " && exit -1
+  fi
   if [ $CLUSTER_STATUS_ITERATIONS -ge 50 ];
   then
     break
@@ -28,7 +38,7 @@ do
   CLUSTER_STATUS=`./rctl get cluster ${CLUSTER_NAME} -o json |jq '.status'|cut -d'"' -f2`
   if [ $CLUSTER_STATUS == "PROVISION_FAILED" ];
   then
-    echo -e " !! Cluster provision failed !!  "
+    echo -e " !! Cluster provisioning failed with status $CLUSTER_STATUS !!  "
     echo -e " !! Exiting !!  " && exit -1
   fi
 
@@ -36,13 +46,13 @@ do
 
   if [ $PROVISION_STATUS == "INFRA_CREATION_FAILED" ];
   then
-    echo -e " !! Cluster provision failed !!  "
+    echo -e " !! Cluster provisioning failed with status $PROVISION_STATUS !!  "
     echo -e " !! Exiting !!  " && exit -1
   fi
 
   if [ $PROVISION_STATUS == "BOOTSTRAP_CREATION_FAILED" ];
   then
-    echo -e " !! Cluster provision failed !!  "
+    echo -e " !! Cluster provisioning failed with status $PROVISION_STATUS !!  "
     echo -e " !! Exiting !!  " && exit -1
   fi
 
@@ -52,7 +62,7 @@ do
 done
 if [ $CLUSTER_STATUS != "READY" ];
 then
-    echo -e " !! Cluster provision failed !!  "
+    echo -e " !! Cluster provisioning failed with status $CLUSTER_STATUS !!  "
     echo -e " !! Exiting !!  " && exit -1
 fi
 if [ $CLUSTER_STATUS == "READY" ];

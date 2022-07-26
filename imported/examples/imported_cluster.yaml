@@ -10,6 +10,6 @@ spec:
   # blueprint below is optional, if not specified, default value is "default"
   blueprint: default
   # blueprint version is optional, if not specified latest version of the bleuprint will be used
-  blueprintversion: Latest
+  blueprintversion: 1.15.0
   # location, can be custom or predefined
   location: aws/us-east-1

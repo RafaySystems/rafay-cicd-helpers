@@ -1,0 +1,108 @@
+kind: Cluster
+metadata:
+  name: test-eks
+  project: defaultproject
+spec:
+  blueprint: default
+  cloudprovider: dev-aws
+  cniprovider: aws-cni
+  proxyconfig: {}
+  systemComponentsPlacement:
+    daemonSetOverride:
+      nodeSelectionEnabled: false
+      tolerations:
+      - effect: NoExecute
+        key: appdaemon
+        operator: Equal
+        value: infradaemon
+    nodeSelector:
+      app: infra
+      dedicated: "true"
+    tolerations:
+    - effect: NoExecute
+      key: app
+      operator: Equal
+      value: infra
+    - effect: NoSchedule
+      key: dedicated
+      operator: Equal
+      value: "true"
+  type: eks
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+managedNodeGroups:
+- amiFamily: AmazonLinux2
+  desiredCapacity: 2
+  iam:
+    withAddonPolicies:
+      autoScaler: true
+  instanceType: t3.xlarge
+  labels:
+    app: infra
+    dedicated: "true"
+  maxSize: 2
+  minSize: 2
+  name: eks-test-ng-1
+  taints:
+  - effect: NoExecute
+    key: team
+    value: cloud
+  version: "1.22"
+  volumeSize: 80
+  volumeType: gp3
+- amiFamily: AmazonLinux2
+  desiredCapacity: 2
+  iam:
+    withAddonPolicies:
+      autoScaler: true
+  instanceType: t3.xlarge
+  labels:
+    app: infra
+    dedicated: "true"
+  maxSize: 2
+  minSize: 2
+  name: eks-test-ng-2
+  taints:
+  - effect: NoExecute
+    key: appdaemon
+    value: infradaemon
+  - effect: NoSchedule
+    key: dedicated
+    value: "true"
+  version: "1.22"
+  volumeSize: 80
+  volumeType: gp3
+- amiFamily: AmazonLinux2
+  desiredCapacity: 2
+  iam:
+    withAddonPolicies:
+      autoScaler: true
+  instanceType: t3.xlarge
+  labels:
+    app: infra
+    dedicated: "true"
+  maxSize: 2
+  minSize: 2
+  name: eks-test-ng-3
+  taints:
+  - effect: NoExecute
+    key: app
+    value: infra
+  - effect: NoSchedule
+    key: dedicated
+    value: "true"
+  version: "1.22"
+  volumeSize: 80
+  volumeType: gp3
+metadata:
+  name: test-eks
+  region: us-west-2
+  version: "1.22"
+vpc:
+  cidr: 192.168.0.0/16
+  clusterEndpoints:
+    privateAccess: true
+    publicAccess: false
+  nat:
+    gateway: Single

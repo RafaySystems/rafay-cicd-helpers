@@ -4,7 +4,7 @@ metadata:
   labels:
     rafay.dev/clusterName: demo-rafay-vmware
     rafay.dev/clusterType: vmware_vsphere
-  name: ankur-prodvmware
+  name: demo-rafay-vmware
   project: demo
 spec:
   blueprint:

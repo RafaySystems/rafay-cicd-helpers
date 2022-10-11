@@ -1,0 +1,38 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: Cluster
+metadata:
+  labels:
+    rafay.dev/clusterName: demo-rafay-vmware
+    rafay.dev/clusterType: vmware_vsphere
+  name: ankur-prodvmware
+  project: demo
+spec:
+  blueprint:
+    name: minimal
+    version: latest
+  cloudCredentials: vmwareaugust
+  config:
+    controlPlane:
+      machineCount: 1
+      version: v1.23.5
+    controlPlaneEndpointIP: 10.108.10.86
+    datacenter: SDDC-Datacenter
+    datastore: WorkloadDatastore
+    network:
+      cni:
+        name: calico
+        version: v3.22.0
+      devices:
+      - networkName: sddc-rafay-k8s
+    proxy:
+      enabled: true
+      httpProxy: http://107.23.108.84:8080/
+      httpsProxy: http://107.23.108.84:8080/
+      noProxy: 10.108.10.0/24
+    resourcePool: Compute-ResourcePool
+    vmFolder: ankurptest
+    vmTemplate: ubuntu-2004-kube-v1.23.5
+    workerNodes:
+      machineCount: 3
+      version: v1.23.5
+  type: Vmware_vsphere

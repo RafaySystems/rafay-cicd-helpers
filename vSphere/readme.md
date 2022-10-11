@@ -8,7 +8,7 @@
 
 ## Provision Cluster
 
-Ensure you have configured details correctly in the cluster specification YAML file. 
+Ensure you have configured details correctly in the cluster specification YAML file. Follow the [Config Schema](https://docs.rafay.co/clusters/vmware/vmware_schema/) documentation. 
 
 ```./rctl apply -f examples/basic-cluster.yaml```
 

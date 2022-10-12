@@ -25,7 +25,10 @@ spec:
       devices:
       - networkName: sddc-rafay-k8s
     proxy:
-      enabled: false
+      enabled: true
+      httpProxy: http://107.23.108.84:8080/
+      httpsProxy: http://107.23.108.84:8080/
+      noProxy: 10.108.10.0/24
     resourcePool: Compute-ResourcePool
     vmFolder: ankurptest
     vmTemplate: ubuntu-2004-kube-v1.23.5

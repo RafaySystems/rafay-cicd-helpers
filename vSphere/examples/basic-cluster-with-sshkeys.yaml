@@ -16,12 +16,7 @@ spec:
       machineCount: 1
       sshAuthorizedKeys:
        - ssh-rsa 
-        AAAAB3NzaC1yc2EAAAADAQABAAABAQDVt10K8xPo2lHI2EeHf/3pVUsSLA00b5yO
-        9sk/4aEVmjim3tb1Dtt+t9b31W93k5vuLB1JsQXqUakHOGCpR0HKBOv3NR9odqTy
-        5s57+2CZaiZ+5oYQ9hz1ugFZGg1NYeeM9z+/3KGJ0FYRC/HYN8u32OSWh9CXnQni
-        7+bm6mw9PKJxaw8B6uOcs8ObbHaZaZ0XJw+pNStZlgk6ANcc5ScNs8DOug+41FIG
-        YSMQtFY1N1NMvsPLqxEod0UlB8rvIvclB2ogX7zNV1hG8w6qr4qwj1clubEo54D2
-        wwdJApI0LP4Yrn0zrnh2KKp2srcZK5Wh/+7Yl05yAHxbwR1fQkqH
+        AAAAB3NzaC1yc2EAAAADAQABAAABAQDVt10K8xPo2lHI2EeHf/3pVUsSLA00b5yO9sk/4aEVmjim3tb1Dtt+t9b31W93k5vuLB1JsQXqUakHOGCpR0HKBOv3NR9odqTy5s57+2CZaiZ+5oYQ9hz1ugFZGg1NYeeM9z+/3KGJ0FYRC/HYN8u32OSWh9CXnQni7+bm6mw9PKJxaw8B6uOcs8ObbHaZaZ0XJw+pNStZlgk6ANcc5ScNs8DOug+41FIGYSMQtFY1N1NMvsPLqxEod0UlB8rvIvclB2ogX7zNV1hG8w6qr4qwj1clubEo54D2wwdJApI0LP4Yrn0zrnh2KKp2srcZK5Wh/+7Yl05yAHxbwR1fQkqH
       version: v1.23.5
     controlPlaneEndpointIP: 10.108.10.86
     datacenter: SDDC-Datacenter
@@ -41,11 +36,6 @@ spec:
       machineCount: 3
       sshAuthorizedKeys:
        - ssh-rsa 
-        AAAAB3NzaC1yc2EAAAADAQABAAABAQDVt10K8xPo2lHI2EeHf/3pVUsSLA00b5yO
-        9sk/4aEVmjim3tb1Dtt+t9b31W93k5vuLB1JsQXqUakHOGCpR0HKBOv3NR9odqTy
-        5s57+2CZaiZ+5oYQ9hz1ugFZGg1NYeeM9z+/3KGJ0FYRC/HYN8u32OSWh9CXnQni
-        7+bm6mw9PKJxaw8B6uOcs8ObbHaZaZ0XJw+pNStZlgk6ANcc5ScNs8DOug+41FIG
-        YSMQtFY1N1NMvsPLqxEod0UlB8rvIvclB2ogX7zNV1hG8w6qr4qwj1clubEo54D2
-        wwdJApI0LP4Yrn0zrnh2KKp2srcZK5Wh/+7Yl05yAHxbwR1fQkqH
+        AAAAB3NzaC1yc2EAAAADAQABAAABAQDVt10K8xPo2lHI2EeHf/3pVUsSLA00b5yO9sk/4aEVmjim3tb1Dtt+t9b31W93k5vuLB1JsQXqUakHOGCpR0HKBOv3NR9odqTy5s57+2CZaiZ+5oYQ9hz1ugFZGg1NYeeM9z+/3KGJ0FYRC/HYN8u32OSWh9CXnQni7+bm6mw9PKJxaw8B6uOcs8ObbHaZaZ0XJw+pNStZlgk6ANcc5ScNs8DOug+41FIGYSMQtFY1N1NMvsPLqxEod0UlB8rvIvclB2ogX7zNV1hG8w6qr4qwj1clubEo54D2wwdJApI0LP4Yrn0zrnh2KKp2srcZK5Wh/+7Yl05yAHxbwR1fQkqH
       version: v1.23.5
   type: Vmware_vsphere

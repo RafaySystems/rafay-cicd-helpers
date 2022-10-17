@@ -1,0 +1,84 @@
+apiVersion: rafay.io/v1alpha1
+kind: Cluster
+metadata:
+  name: windows-nodepool
+  project: demos
+spec:
+  blueprint: minimal
+  cloudprovider: azureankurp
+  clusterConfig:
+    apiVersion: rafay.io/v1alpha1
+    kind: aksClusterConfig
+    metadata:
+      name: windows-nodepool
+    spec:
+      internal:
+        resources:
+          roleAssignments:
+          - additionalMetadata:
+              resourceGroupName: ankurp
+              subscriptionID: a2252eb2-7a25-432b-a5ec-e18eba6f26b1
+            apiVersion: 2018-09-01-preview
+            name: vnetap/default/Microsoft.Authorization/9aae9345-29f1-5d1a-b2d9-6e9e312006e3
+            properties:
+              principalId: '[reference(''/subscriptions/a2252eb2-7a25-432b-a5ec-e18eba6f26b1/resourceGroups/ankurp/providers/Microsoft.ContainerService/managedClusters/aksversionap'',
+                ''2022-07-01'', ''Full'').identity.principalId]'
+              roleDefinitionId: /subscriptions/a2252eb2-7a25-432b-a5ec-e18eba6f26b1/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7
+              scope: /subscriptions/a2252eb2-7a25-432b-a5ec-e18eba6f26b1/resourceGroups/ankurp/providers/Microsoft.Network/virtualNetworks/vnetap/subnets/default
+            type: Microsoft.Network/virtualNetworks/subnets/providers/roleAssignments
+      managedCluster:
+        apiVersion: "2022-07-01"
+        identity:
+          type: SystemAssigned
+        location: centralindia
+        properties:
+          apiServerAccessProfile:
+            enablePrivateCluster: true
+          dnsPrefix: aksversionap-dns
+          kubernetesVersion: 1.23.12
+          networkProfile:
+            dnsServiceIP: 10.30.1.8
+            dockerBridgeCidr: 172.17.0.1/16
+            loadBalancerSku: standard
+            networkPlugin: azure
+            serviceCidr: 10.30.1.0/24
+        sku:
+          name: Basic
+          tier: Free
+        type: Microsoft.ContainerService/managedClusters
+      nodePools:
+      - apiVersion: "2022-07-01"
+        location: centralindia
+        name: primary
+        properties:
+          count: 1
+          enableAutoScaling: true
+          maxCount: 1
+          maxPods: 40
+          minCount: 1
+          mode: System
+          orchestratorVersion: 1.23.12
+          osType: Linux
+          type: VirtualMachineScaleSets
+          vmSize: Standard_B4ms
+          vnetSubnetID: /subscriptions/a2252eb2-7a25-432b-a5ec-e18eba6f26b1/resourceGroups/ankurp/providers/Microsoft.Network/virtualNetworks/vnetap/subnets/default
+        type: Microsoft.ContainerService/managedClusters/agentPools
+      - apiVersion: "2022-07-01"
+        location: centralindia
+        name: win
+        properties:
+          count: 1
+          enableAutoScaling: true
+          maxCount: 1
+          maxPods: 40
+          minCount: 1
+          mode: User
+          orchestratorVersion: 1.23.12
+          osType: Windows
+          type: VirtualMachineScaleSets
+          vmSize: Standard_B4ms
+          vnetSubnetID: /subscriptions/a2252eb2-7a25-432b-a5ec-e18eba6f26b1/resourceGroups/ankurp/providers/Microsoft.Network/virtualNetworks/vnetap/subnets/default
+        type: Microsoft.ContainerService/managedClusters/agentPools
+      resourceGroupName: ankurp
+  proxyconfig: {}
+  type: aks

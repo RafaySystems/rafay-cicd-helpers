@@ -27,6 +27,7 @@ spec:
     proxy:
       enabled: false
     resourcePool: Compute-ResourcePool
+    vcenterCaTlsThumbprint: 99 B5 B4 28 11 2B B2 47 1D 0B 75 47 D6 3B 62 FF DE A2
     vmFolder: ankurptest
     vmTemplate: ubuntu-2004-kube-v1.23.5
     workerNodes:

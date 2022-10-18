@@ -1,0 +1,7 @@
+#Add all custom values for datadog agent.
+datadog:
+  apiKey: "<UPDATE_API_KEY>"
+  site: "datadoghq.com"
+  logs:
+    ebabled: true
+    containerCollectAll: true

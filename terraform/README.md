@@ -1,44 +1,37 @@
-## Requirements
+# Rafay terraform provider examples
 
-This terraform example uses AWS provider. Hence it assumes your AWS configuration is configured on the system where you 
-are running this terraform.
+This includes examples of Rafay project, cloud_credentials, aks_cluster, repository, addons, blueprint & cluster overrides.
 
-Also following RCTL environment variables needs to be set.
+# Setup
 
+- Update Rafay API & SECRET
 ```
-    RCTL_REST_ENDPOINT="console.rafay.dev"
-    RCTL_OPS_ENDPOINT="console.rafay.dev"
-    RCTL_API_KEY="xxxxxxxx"
-    RCTL_API_SECRET="yyyyyyyyyyyyyyyyyyyy"
-    RCTL_PROJECT="defaultproject"
-```
-## Overview
-
-This will create the following resources:
-
-- New Project on Rafay
-- AWS IAM Policy to provision EKS Cluster
-- AWS IAM Role delegated to Rafay to provision EKS Cluster
-- New Cloud Credential on Rafay with above IAM Role
-- An EKS Cluster using the above Cloud Credential in the Project created above
-
-## Configuration
-
-Customize modules/rafay_cluster/eks-cluster.yaml with appropriate values.
-
-Copy terraform-template.tfvars to terraform.tfvars
-```
-    cp terraform-template.tfvars terraform.tfvars
+artifacts/credentials/config.json
 ```
 
-Edit terraform.tfvars to modify the following variables:
+- Update tfvars file with following variables. Please review other variables and update as required.
 ```
-    project_name - Name of the Rafay project that will be created
-    rafay_cloud_credential_name - Name of the Rafay Cloud Credential that will be created
-    rafay_aws_account_id - Rafay AWS Account id that you will be delegating to 
-    cluster_name - Name of the EKS Cluster name that will be created
-    aws_iam_role_name - Name of the AWS IAM role that will be created
-    aws_iam_policy_name - Name of the AWS IAM policy that will be created
+terraform.tfvars
+
+#Poject name variable
+project                 = "<PROJECT_NAME>"
+
+#Cloud Credentials specific varaibles
+cloud_credentials_name  = "<CLOUD_CREDENTIAL_NAME>"
+subscription_id         = "<SUBSCRIPTION_ID>"
+tenant_id               = "<TENANT_ID>"
+client_id               = "<CLIENT_ID>"
+client_secret           = "<CLIENT_SECRET>"
+
+#Cluster specific varaibles
+cluster_name           =  "<CLUSTER_NAME>"
+cluster_resource_group =  "<RESOURCE_GROUP_NAME>"
+cluster_location       =  "<CLUSTER_LOCATION>"
+```
+
+- Update any custom values for addons as required.
+```
+artifacts/ADDON_NAME/
 ```
 
 ## BUILD & RUN

@@ -1,14 +1,22 @@
-kind: AddonVersion
+apiVersion: infra.k8smgmt.io/v3
+kind: Addon
 metadata:
-  name: v1.6.1
+  name: cert-manager
+  project: demo
 spec:
-  addon: cert-manager
+  artifact:
+    artifact:
+      chartName: cert-manager
+      chartVersion: 1.5.3
+      repository: cert-manager-helm
+      valuesPaths:
+      #paths:
+      - name: file://addon/examples/cert-manager-values.yaml
+    options:
+      maxHistory: 10
+      timeout: 5m0s
+    type: Helm
   namespace: cert-manager
-  template:
-    type: Helm3
-    repository_ref: jetstack
-    repo_artifact_meta:
-      helm:
-        chartName: cert-manager
-        tag: v1.6.1
-    valuesFile: addon/examples/cert-manager-values.yaml
+  sharing:
+    enabled: false
+  version: v1.5.3

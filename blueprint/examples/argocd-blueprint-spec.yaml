@@ -1,19 +1,22 @@
-kind: BlueprintVersion
+apiVersion: infra.k8smgmt.io/v3
+kind: Blueprint
 metadata:
-  # version name
-  name: v1
-  # project name. optional
-  project: defaultproject
+  name: argocd-blueprint
+  project: demo
 spec:
-  # blueprint object
-  blueprint: argocd-blueprint
-  # list of addons and thier versions. versions must be provided
-  addons:
-    - name: argo-cd
-      version: v2.14.7
-  psps:
-    - rafay-privileged-psp
-  # cluster-scoped or namespace-scoped
-  pspScope: cluster-scoped
-  # rafay ingress. optional. default false
-  rafayIngress: true
+  base:
+    name: default
+    version: 1.18.0
+  customAddons:
+  - name: argo-cd
+    version: v2.14.7
+  defaultAddons:
+    enableIngress: true
+    enableLogging: false
+    enableMonitoring: true
+    enableVM: false
+  drift:
+    enabled: false
+  sharing:
+    enabled: false
+  version: v1

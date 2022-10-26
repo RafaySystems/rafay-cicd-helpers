@@ -1,22 +1,24 @@
----
-kind: BlueprintVersion
+apiVersion: infra.k8smgmt.io/v3
+kind: Blueprint
 metadata:
-  # version name
-  name: v1
-  # project name. optional
-  project: defaultproject
+  name: standard-blueprint
+  project: demo
 spec:
-  # blueprint object
-  blueprint: standard-blueprint
-  # list of addons and thier versions. versions must be provided
-  addons:
-    - name: cert-manager
-      version: v1
-    - name: vault-server
-      version: v0.9.1
-  psps:
-    - rafay-privileged-psp
-  # cluster-scoped or namespace-scoped
-  pspScope: cluster-scoped
-  # rafay ingress. optional. default false
-  rafayIngress: true
+  base:
+    name: default
+    version: 1.18.0
+  customAddons:
+  - name: vault-server
+    version: v0.9.1
+  - name: cert-manager
+    version: v1.5.3
+  defaultAddons:
+    enableIngress: true
+    enableLogging: false
+    enableMonitoring: true
+    enableVM: false
+  drift:
+    enabled: false
+  sharing:
+    enabled: false
+  version: v1

@@ -26,6 +26,6 @@ Click [here](https://docs.rafay.co/clusters/upstream/cli/) for details on additi
 
 ## Automation
 
-Customers using external automation platforms (e.g. Jenkins, GitHub Actions, GitLab etc) can embed the RCTL CLI for complete lifecycle management of Upstream Kubernetes on vSphere environments. 
+Customers using external automation platforms (e.g. Jenkins, GitHub Actions, GitLab etc) can embed the RCTL CLI for complete lifecycle management of Upstream Kubernetes on Bare Metal and VM-based environments. 
 
 ---

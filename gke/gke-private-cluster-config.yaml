@@ -1,0 +1,55 @@
+apiVersion: infra.k8smgmt.io/v2
+kind: Cluster
+metadata:
+  name: kalyanprivatenov12
+  project: kalyan-rds
+spec:
+  blueprint:
+    name: minimal
+    version: latest
+  cloudCredentials: kalyan-gke
+  config:
+    controlPlaneVersion: "1.22"
+    feature:
+      enableManagedServiceforPrometheus: true
+    location:
+      region:
+        region: us-west1
+        zone: us-west1-b
+      type: regional
+    name: kalyanprivatenov12
+    network:
+      enableVPCNativeTraffic: true
+      maxPodsPerNode: 75
+      name: default
+      networkAccess:
+        privacy: private
+        privateCluster:
+          controlPlaneIPRange: 10.31.1.0/28
+          disableSNAT: true
+          enableAccessControlPlaneExternalIP: true
+          enableAccessControlPlaneGlobal: true
+      nodeSubnetName: default
+    nodePools:
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: default-nodepool
+      nodeVersion: "1.22"
+      size: 3
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: pool2
+      nodeVersion: "1.22"
+      size: 2
+      zone:
+      - us-west1-c
+    project: kalyan-project2
+    security:
+      enableWorkloadIdentity: true
+  type: Gke

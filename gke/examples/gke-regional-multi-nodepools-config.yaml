@@ -1,13 +1,13 @@
 apiVersion: infra.k8smgmt.io/v2
 kind: Cluster
 metadata:
-    name: kalyn-rctlregn-nov9
-    project: kalyan-rds
+    name: rctlregn-nov9
+    project: default-project
 spec:
     blueprint:
         name: minimal
         version: latest
-    cloudCredentials: kalyan-gke
+    cloudCredentials: cloudcred-gke
     config:
         controlPlaneVersion: "1.22"
         location:
@@ -15,7 +15,7 @@ spec:
                 region: us-east1
                 zone: us-east1-b
             type: regional
-        name: kalyn-rctlregn-nov9
+        name: rctlregn-nov9
         network:
             enableVPCNativeTraffic: true
             maxPodsPerNode: 75
@@ -54,7 +54,7 @@ spec:
                       value: nodepool2
               nodeVersion: "1.22"
               size: 2
-        project: kalyan-project2
+        project: project2
         security:
             enableLegacyAuthorization: true
             enableWorkloadIdentity: true

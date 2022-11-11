@@ -1,13 +1,13 @@
 apiVersion: infra.k8smgmt.io/v2
 kind: Cluster
 metadata:
-  name: kalyanprivatenov12
-  project: kalyan-rds
+  name: privatenov12
+  project: default-project
 spec:
   blueprint:
     name: minimal
     version: latest
-  cloudCredentials: kalyan-gke
+  cloudCredentials: cloudcred-gke
   config:
     controlPlaneVersion: "1.22"
     feature:
@@ -17,7 +17,7 @@ spec:
         region: us-west1
         zone: us-west1-b
       type: regional
-    name: kalyanprivatenov12
+    name: privatenov12
     network:
       enableVPCNativeTraffic: true
       maxPodsPerNode: 75
@@ -49,7 +49,7 @@ spec:
       size: 2
       zone:
       - us-west1-c
-    project: kalyan-project2
+    project: project2
     security:
       enableWorkloadIdentity: true
   type: Gke

@@ -1,0 +1,39 @@
+apiVersion: infra.k8smgmt.io/v2
+kind: Cluster
+metadata:
+  name: customnetwork-gke
+  project: defaultproject
+spec:
+  blueprint:
+    name: default-gke
+    version: latest
+  cloudCredentials: gkecloud
+  config:
+    controlPlaneVersion: "1.22"
+    location:
+      type: zonal
+      zone: us-west2-a
+    name: customnetwork-gke
+    network:
+      enableVPCNativeTraffic: true
+      maxPodsPerNode: 110
+      name: gkecustomvpc
+      networkAccess:
+        privacy: private
+        privateCluster:
+          controlPlaneIPRange: 162.16.0.16/28
+          disableSNAT: true
+          enableAccessControlPlaneExternalIP: true
+          enableAccessControlPlaneGlobal: true
+      nodeSubnetName: gkecustomsubnet
+    nodePools:
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: default-nodepool
+      nodeVersion: "1.22"
+      size: 3
+    project: googleproject2
+  type: Gke

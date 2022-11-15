@@ -1,0 +1,53 @@
+apiVersion: infra.k8smgmt.io/v2
+kind: Cluster
+metadata:
+  name: gke-zonal-cluster
+  project: defaultproject
+spec:
+  blueprint:
+    name: default-gke
+    version: latest
+  cloudCredentials: gcp-credentials
+  config:
+    controlPlaneVersion: "1.23"
+    feature:
+      enableImageStreaming: true
+    location:
+      type: zonal
+      zone: us-east1-c
+    name: gke-zonal-cluster
+    network:
+      enableVPCNativeTraffic: true
+      maxPodsPerNode: 110
+      name: default
+      networkAccess:
+        privacy: public
+      nodeSubnetName: default
+    nodePools:
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: nodepool1
+      nodeVersion: "1.23"
+      size: 3
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: nodepool2
+      nodeMetadata:
+        gceInstanceMetadata:
+        - key: test-by
+          value: qe-cloud-engg
+        kubernetesLabels:
+        - key: team
+          value: rafay-org
+        - key: guild
+          value: cloud-engg
+      nodeVersion: "1.23"
+      size: 3
+    project: gcp-project
+  type: Gke

@@ -1,0 +1,69 @@
+apiVersion: infra.k8smgmt.io/v2
+kind: Cluster
+metadata:
+  name: gke-regional-multinode
+  project: defaultproject
+spec:
+  blueprint:
+    name: default-gke
+    version: latest
+  cloudCredentials: gcp-credentials
+  config:
+    controlPlaneVersion: "1.23"
+    feature:
+      enableApplicationManagerBeta: true
+      enableComputeEnginePersistentDiskCSIDriver: true
+      enableManagedServiceforPrometheus: true
+    location:
+      region:
+        region: us-east1
+        zone: us-east1-b
+      type: regional
+    name: gke-regional-multinode
+    network:
+      enableVPCNativeTraffic: true
+      maxPodsPerNode: 75
+      name: default
+      networkAccess:
+        privacy: public
+      nodeSubnetName: default
+    nodePools:
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: default-nodepool
+      nodeMetadata:
+        gceInstanceMetadata:
+        - key: poolnumber
+          value: one
+        - key: qe-team
+          value: cloud-engg
+        kubernetesLabels:
+        - key: pooltype
+          value: defnode1
+        - key: team
+          value: qe-infra
+      nodeVersion: "1.23"
+      size: 2
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: pool2
+      nodeVersion: "1.23"
+      size: 2
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: zoneonlypool
+      nodeVersion: "1.23"
+      size: 2
+      zone:
+      - us-east1-b
+    project: gke-project
+  type: Gke

@@ -1,0 +1,79 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: Cluster
+metadata:
+  name: test-mks
+  project: defaultproject
+  labels:
+    check2: value2
+    check3: value3
+spec:
+  blueprint:
+    name: minimal
+    version: latest
+  config:
+    autoApproveNodes: true
+    dedicatedMastersEnabled: false
+    highAvailability: true
+    kubernetesVersion: v1.25.2
+    location: sanjose-us
+    network:
+      cni:
+        name: Calico
+        version: 3.19.1
+      ipv6:
+        podSubnet: 2001:db8:42:0::/56
+        serviceSubnet: 2001:db8:42:1::/112
+      podSubnet: 10.244.0.0/16
+      serviceSubnet: 10.96.0.0/12
+    nodes:
+    - arch: amd64
+      hostname: ip-172-31-52-72
+      operatingSystem: Ubuntu20.04
+      privateip: 172.31.52.72
+      interface: eth0
+      roles:
+      - Master
+      - Storage
+      ssh:
+        ipAddress: 35.86.15.193
+        port: "22"
+        privateKeyPath: test-mks.pem
+        username: ubuntu
+    - arch: amd64
+      hostname: ip-172-31-51-77
+      operatingSystem: Ubuntu20.04
+      privateip: 172.31.51.77
+      roles:
+      - Master
+      - Storage
+      ssh:
+        ipAddress: 35.86.229.200
+        port: "22"
+        privateKeyPath: test-mks.pem
+        username: ubuntu
+    - arch: amd64
+      hostname: ip-172-31-53-221
+      operatingSystem: Ubuntu20.04
+      privateip: 172.31.53.221
+      roles:
+      - Master
+      - Worker
+      - Storage
+      ssh:
+        ipAddress: 35.87.242.46
+        port: "22"
+        privateKeyPath: test-mks.pem
+        username: ubuntu  
+    - arch: amd64
+      hostname: ip-172-31-53-24
+      operatingSystem: Ubuntu20.04
+      privateip: 172.31.53.24
+      roles:
+      - Worker
+      - Storage
+      ssh:
+        ipAddress: 18.246.16.225
+        port: "22"
+        privateKeyPath: test-mks.pem
+        username: ubuntu
+  type: mks

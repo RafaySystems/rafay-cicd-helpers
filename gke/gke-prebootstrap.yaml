@@ -1,0 +1,45 @@
+apiVersion: infra.k8smgmt.io/v2
+kind: Cluster
+metadata:
+  name: gke-regionaklaynnov17
+  project: kalyan-stage
+spec:
+  blueprint:
+    name: default-gke
+    version: latest
+  cloudCredentials: kalyangcp
+  config:
+    controlPlaneVersion: "1.22"
+    feature:
+      enableComputeEnginePersistentDiskCSIDriver: true
+      enableFilestoreCSIDriver: true
+    location:
+      defaultNodeLocations:
+      - us-east1-b
+      region:
+        region: us-east1
+        zone: us-east1-c
+      type: regional
+    name: gke-regionaklaynnov17
+    network:
+      enableVPCNativeTraffic: true
+      maxPodsPerNode: 110
+      name: default
+      networkAccess:
+        privacy: public
+      nodeSubnetName: default
+    nodePools:
+    - machineConfig:
+        bootDiskSize: 100
+        bootDiskType: pd-standard
+        imageType: UBUNTU_CONTAINERD
+        machineType: e2-standard-4
+      name: default-nodepool
+      nodeVersion: "1.22"
+      size: 3
+    preBootstrapCommands:
+    - mkdir ${ROOT_DIR}/etc/folder1
+    - mkdir ${ROOT_DIR}/etc/folder2
+    - touch ${ROOT_DIR}/etc/test.txt
+    project: kalyan-project2
+  type: Gke

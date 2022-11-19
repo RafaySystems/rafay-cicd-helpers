@@ -1,0 +1,50 @@
+apiVersion: infra.k8smgmt.io/v2
+kind: Cluster
+metadata:
+  name: kalyn-rctltest-nov9
+  project: kalyan-rds
+spec:
+  blueprint:
+    name: minimal
+    version: latest
+  cloudCredentials: kalyan-gke
+  config:
+    controlPlaneVersion: "1.23"
+    feature:
+      enableManagedServiceforPrometheus: true
+    location:
+      type: zonal
+      zone: us-east1-b
+    name: kalyn-rctltest-nov9
+    network:
+      enableVPCNativeTraffic: true
+      maxPodsPerNode: 75
+      name: default
+      networkAccess:
+        privacy: public
+      nodeSubnetName: default
+    nodePools:  
+    - machineConfig:
+        bootDiskSize: 50
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-medium
+      name: default-nodepool
+      nodeMetadata:
+        gceInstanceMetadata:
+        - key: org-team
+          value: rafay-qe-cloud
+        kubernetesLabels:
+        - key: team-label
+          value: rafay-qe
+      nodeSecurity:
+        enableIntegrityMonitoring: true
+        enableSecureBoot: true
+      nodeVersion: "1.23"
+      size: 2
+    project: kalyan-project2
+    security:
+      enableLegacyAuthorization: true
+      enableWorkloadIdentity: true
+  preBootstrapCommands: null
+  type: Gke

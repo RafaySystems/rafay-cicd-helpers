@@ -42,8 +42,6 @@ A single node, converged (control plane and node) cluster specification identify
 - A specific Kubernetes version
 - Ubuntu 20.04 LTS OS
 - Calico CNI
-- IPv6 addresses
-
 
 ### Dedicated Master 
 **File Name: "mks-dedicated-master.yaml"** 
@@ -52,7 +50,7 @@ A multi-node, cluster with a dedicated master node with the following:
 
 - A specific Kubernetes version
 - Ubuntu 20.04 LTS OS
-- Flannel CNI
+- Calico CNI
 - IPv6 addresses
 - Dedicated Master (Control Plane) Node
 - (Worker) Node
@@ -66,7 +64,7 @@ A multi-node, highly available (multi-master) cluster with the following:
 - A specific Kubernetes version
 - Ubuntu 20.04 LTS OS
 - Calico CNI
-- IPv6 addresses
+- HTTP(S) Proxy 
 - Three Dedicated Master (Control Plane) Nodes
 - (Worker) Nodes
 

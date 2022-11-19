@@ -18,8 +18,8 @@ spec:
     location: sanjose-us
     network:
       cni:
-        name: Flannel
-        version: 0.13.0
+        name: Calico
+        version: 3.19.1
       ipv6:
         podSubnet: 2001:db8:42:0::/56
         serviceSubnet: 2001:db8:42:1::/112
@@ -49,11 +49,5 @@ spec:
         ipAddress: 35.88.0.115
         port: "22"
         privateKeyPath: test-mks.pem
-        username: ubuntu 
-    proxy:
-      httpProxy: null
-      httpsProxy: null
-      noProxy: null
-      proxyRootCA: null
-      tlsTerminate: true
+        username: ubuntu
   type: mks

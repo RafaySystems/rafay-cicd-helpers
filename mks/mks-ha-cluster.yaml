@@ -63,7 +63,7 @@ spec:
         ipAddress: 35.87.242.46
         port: "22"
         privateKeyPath: test-mks.pem
-        username: ubuntu  
+        username: ubuntu
     - arch: amd64
       hostname: ip-172-31-53-24
       operatingSystem: Ubuntu20.04
@@ -76,4 +76,10 @@ spec:
         port: "22"
         privateKeyPath: test-mks.pem
         username: ubuntu
+    proxy:
+      httpProxy: http://X.X.X.X:443/
+      httpsProxy: http://X.X.X.X:443/
+      noProxy: null
+      proxyRootCA: null
+      tlsTerminate: true
   type: mks

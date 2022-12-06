@@ -3,8 +3,8 @@ module "project" {
   project     = var.project
 }
 
-module "cloud_credentials" {
-  source                  = "./modules/cloud_credentials"
+module "cloud-credentials" {
+  source                  = "./modules/cloud-credentials"
   cloud_credentials_name  = var.cloud_credentials_name
   project                 = var.project
   client_id               = var.client_id
@@ -26,6 +26,14 @@ module "addons" {
   project              = var.project
   infra_addons         = var.infra_addons
   depends_on           = [ module.repositories]
+}
+
+module "cluster-overrides" {
+  source               = "./modules/cluster-overrides"
+  project              = var.project
+  cluster_name         = var.cluster_name
+  overrides_config     = var.overrides_config
+  depends_on           = [ module.addons]
 }
 
 module "blueprint" {
@@ -55,8 +63,7 @@ module cluster {
   node_max_count         = var.node_max_count
   node_min_count         = var.node_min_count
   vm_size                = var.vm_size
-  node_resource_group    = var.node_resource_group
   node_tags              = var.node_tags
   node_labels            = var.node_labels
-  depends_on             = [ module.cloud_credentials, module.blueprint]
+  depends_on             = [ module.cloud-credentials, module.blueprint, module.cluster-overrides]
 }

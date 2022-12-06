@@ -102,10 +102,6 @@ variable "tenant_id" {
   type = string
 }
 
-variable "node_resource_group" {
-  type = string
-}
-
 variable "cluster_tags" {
   type = map
 }
@@ -116,4 +112,11 @@ variable "node_tags" {
 
 variable "node_labels" {
   type = map
+}
+
+variable "overrides_config" {
+  type = map(object({
+    override_addon_name   = string
+    override_values       = string
+  }))
 }

@@ -11,9 +11,8 @@ client_secret           = "<CLIENT_SECRET>"
 #Cluster specific varaibles
 cluster_name           =  "aks-cluster"
 cluster_resource_group =  "<RESOURCE_GROUP_NAME>"
-node_resource_group    =  "<NODEPOOL_RESOURCE_GROUP_NAME>"
 cluster_location       =  "centralindia"
-k8s_version            =  "1.23.12"
+k8s_version            =  "1.22.11"
 nodepool_name          =  "pool1"
 node_count             =  "2"
 node_max_count         =  "3"
@@ -90,5 +89,18 @@ public_repositories = {
     "cert-manager" = {
         type = "Helm"
         endpoint = "https://charts.jetstack.io"
+    }
+}
+
+#Override config
+overrides_config = {
+    "ingress-nginx" = {
+      override_addon_name = "ingress-nginx"
+      override_values = <<-EOT
+      controller:
+        service:
+          annotations:
+            service.beta.kubernetes.io/azure-load-balancer-internal: "false"
+      EOT
     }
 }

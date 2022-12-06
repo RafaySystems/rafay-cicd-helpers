@@ -32,7 +32,6 @@ resource "rafay_aks_cluster" "cluster" {
             dns_prefix         = "${var.cluster_name}-dns"
             enable_rbac        = true
             kubernetes_version = var.k8s_version
-            node_resource_group   = var.node_resource_group
             addon_profiles {
               http_application_routing {
                 enabled = false

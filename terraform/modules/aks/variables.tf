@@ -50,10 +50,6 @@ variable "vm_size" {
   type = string
 }
 
-variable "node_resource_group" {
-  type = string
-}
-
 variable "cluster_tags" {
   type = map
 }

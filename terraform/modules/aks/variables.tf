@@ -50,14 +50,14 @@ variable "vm_size" {
   type = string
 }
 
-variable "vm_username" {
-  type = string
+variable "cluster_tags" {
+  type = map
 }
 
-variable "vm_sshkey" {
-  type = string
+variable "node_tags" {
+  type = map
 }
 
-variable "node_resource_group" {
-  type = string
+variable "node_labels" {
+  type = map
 }

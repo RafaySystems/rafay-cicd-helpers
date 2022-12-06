@@ -21,47 +21,23 @@ resource "rafay_aks_cluster" "cluster" {
         managed_cluster {
           apiversion = "2021-05-01"
           identity {
-            type = "UserAssigned"
-            user_assigned_identities = {
-              "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}" : "{}"
-            }
+            type = "SystemAssigned"
           }
           location = var.cluster_location
           properties {
             api_server_access_profile {
               enable_private_cluster = true
               enable_private_cluster_public_fqdn = false
-              private_dns_zone  = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/privateDnsZones/{dnsZoneName}"
             }
             dns_prefix         = "${var.cluster_name}-dns"
             enable_rbac        = true
             kubernetes_version = var.k8s_version
-            node_resource_group   = var.node_resource_group
-            linux_profile  {
-              admin_username = var.vm_username
-              ssh {
-                public_keys {
-                  key_data = var.vm_sshkey
-                }
-              }
-            }
-            aad_profile {
-              managed                = true
-              admin_group_object_ids = ["ADMIN_GROUP_ID"]
-              enable_azure_rbac      = false
-            }
             addon_profiles {
               http_application_routing {
                 enabled = false
               }
               azure_policy  {
                 enabled = false
-              }
-              oms_agent {
-                enabled = true
-                config {
-                  log_analytics_workspace_resource_id = "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.operationalinsights/workspaces/{loganalyticsWorkspaceName}"
-                }
               }
               azure_keyvault_secrets_provider {
                 enabled = true
@@ -93,16 +69,11 @@ resource "rafay_aks_cluster" "cluster" {
             network_profile {
               network_plugin = "kubenet"
               network_policy = "calico"
-              outbound_type  = "userDefinedRouting"
+              outbound_type  = "loadBalancer"
             }
           }
           type = "Microsoft.ContainerService/managedClusters"
-          tags = {
-            "key" = "value"
-          }
-          additional_metadata {
-            oms_workspace_location = "centralindia"
-          }
+          tags = var.cluster_tags
         }
         node_pools {
           apiversion = "2021-05-01"
@@ -125,13 +96,8 @@ resource "rafay_aks_cluster" "cluster" {
               max_surge = "40%"
             }
             vm_size = var.vm_size
-            node_labels = {
-              "key" = "value"
-            }
-            tags = {
-              "key" = "value"
-            }
-            vnet_subnet_id = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}"
+            node_labels = var.node_labels
+            tags = var.node_tags
           }
           type = "Microsoft.ContainerService/managedClusters/agentPools"
         }

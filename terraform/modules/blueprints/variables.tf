@@ -18,42 +18,13 @@ variable "base_blueprint_version" {
   type = string
 }
 
-variable "custom_addon_1" {
-  type = string
-}
-
-variable "custom_addon_1_version" {
-  type = string
-}
-
-variable "custom_addon_2" {
-  type = string
-}
-
-variable "custom_addon_2_version" {
-  type = string
-}
-
-variable "custom_addon_3" {
-  type = string
-}
-
-variable "custom_addon_3_version" {
-  type = string
-}
-
-variable "custom_addon_4" {
-  type = string
-}
-
-variable "custom_addon_4_version" {
-  type = string
-}
-
-variable "custom_addon_5" {
-  type = string
-}
-
-variable "custom_addon_5_version" {
-  type = string
+variable "infra_addons" {
+  type = map(object({
+    namespace     = string
+    addon_version = string
+    chart_name    = string
+    chart_version = string
+    repository    = string
+    file_path     = string
+  }))
 }

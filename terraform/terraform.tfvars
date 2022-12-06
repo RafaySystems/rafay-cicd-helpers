@@ -13,30 +13,29 @@ cluster_name           =  "aks-cluster"
 cluster_resource_group =  "<RESOURCE_GROUP_NAME>"
 node_resource_group    =  "<NODEPOOL_RESOURCE_GROUP_NAME>"
 cluster_location       =  "centralindia"
-k8s_version            =  "1.22.11"
+k8s_version            =  "1.23.12"
 nodepool_name          =  "pool1"
 node_count             =  "2"
 node_max_count         =  "3"
 node_min_count         =  "1"
 vm_size                =  "Standard_DS2_v2"
-vm_username            =  "<USERNAME>"
-vm_sshkey              =  "<SSH_PUBLIC_KEY>"
+cluster_tags           = {
+    "created-by" = "user"
+    "to-test"    = "terraform"
+}
+node_tags = {
+    "env" = "prod"
+
+}
+node_labels = {
+    "type" = "aks"
+}
 
 #Blueprint/Addons specific varaibles
 blueprint_name         = "custom-blueprint"
-blueprint_version      = "v2"
+blueprint_version      = "v0"
 base_blueprint         = "default-aks"
-base_blueprint_version = "1.18.0"
-custom_addon_1         = "ingress-nginx"
-custom_addon_1_version = "v1.3.1"
-custom_addon_2         = "istio-base"
-custom_addon_2_version = "v1.15.0"
-custom_addon_3         = "istiod"
-custom_addon_3_version = "v1.15.0"
-custom_addon_4         = "datadog"
-custom_addon_4_version = "v7"
-custom_addon_5         = "cert-manager"
-custom_addon_5_version = "v1.9.1"
+base_blueprint_version = "1.20.0"
 namespaces              = ["ingress-nginx", "istio-system", "datadog", "cert-manager"]
 infra_addons = {
     "ingress-nginx" = {
@@ -63,14 +62,6 @@ infra_addons = {
          chart_version = "1.15.0"
          repository    = "istio"
          file_path     = null
-    }
-    "datadog" = {
-         namespace     = "datadog"
-         addon_version = "v7"
-         chart_name    = "datadog"
-         chart_version = "3.1.1"
-         repository    = "datadog"
-         file_path     = "file://artifacts/datadog/custom_values.yaml"
     }
     "cert-manager" = {
          namespace     = "cert-manager"
@@ -99,19 +90,5 @@ public_repositories = {
     "cert-manager" = {
         type = "Helm"
         endpoint = "https://charts.jetstack.io"
-    }
-}
-
-#Override config
-overrides_config = {
-    "ingress-nginx" = {
-      override_addon_name = "ingress-nginx"
-      override_values = <<-EOT
-      controller:
-        service:
-          annotations:
-            service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-            service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "<SUBNET_NAME>"
-      EOT
     }
 }

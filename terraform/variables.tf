@@ -41,46 +41,6 @@ variable "base_blueprint_version" {
   type = string
 }
 
-variable "custom_addon_1" {
-  type = string
-}
-
-variable "custom_addon_1_version" {
-  type = string
-}
-
-variable "custom_addon_2" {
-  type = string
-}
-
-variable "custom_addon_2_version" {
-  type = string
-}
-
-variable "custom_addon_3" {
-  type = string
-}
-
-variable "custom_addon_3_version" {
-  type = string
-}
-
-variable "custom_addon_4" {
-  type = string
-}
-
-variable "custom_addon_4_version" {
-  type = string
-}
-
-variable "custom_addon_5" {
-  type = string
-}
-
-variable "custom_addon_5_version" {
-  type = string
-}
-
 variable "cluster_name" {
     type = string
 }
@@ -142,21 +102,18 @@ variable "tenant_id" {
   type = string
 }
 
-variable "vm_username" {
-  type = string
-}
-
-variable "vm_sshkey" {
-  type = string
-}
-
 variable "node_resource_group" {
   type = string
 }
 
-variable "overrides_config" {
-  type = map(object({
-    override_addon_name   = string
-    override_values       = string
-  }))
+variable "cluster_tags" {
+  type = map
+}
+
+variable "node_tags" {
+  type = map
+}
+
+variable "node_labels" {
+  type = map
 }

@@ -28,14 +28,6 @@ module "addons" {
   depends_on           = [ module.repositories]
 }
 
-module "cluster-overrides" {
-  source               = "./modules/cluster-overrides"
-  project              = var.project
-  cluster_name         = var.cluster_name
-  overrides_config     = var.overrides_config
-  depends_on           = [ module.addons]
-}
-
 module "blueprint" {
   source                 = "./modules/blueprints"
   project                = var.project
@@ -43,22 +35,14 @@ module "blueprint" {
   blueprint_version      = var.blueprint_version
   base_blueprint         = var.base_blueprint
   base_blueprint_version = var.base_blueprint_version
-  custom_addon_1         = var.custom_addon_1
-  custom_addon_1_version = var.custom_addon_1_version
-  custom_addon_2         = var.custom_addon_2
-  custom_addon_2_version = var.custom_addon_2_version
-  custom_addon_3         = var.custom_addon_3
-  custom_addon_3_version = var.custom_addon_3_version
-  custom_addon_4         = var.custom_addon_4
-  custom_addon_4_version = var.custom_addon_4_version
-  custom_addon_5         = var.custom_addon_5
-  custom_addon_5_version = var.custom_addon_5_version
+  infra_addons           = var.infra_addons
   depends_on           = [ module.addons ]
 }
 
 module cluster {
   source                 = "./modules/aks"
   cluster_name           = var.cluster_name
+  cluster_tags           = var.cluster_tags
   project                = var.project
   blueprint_name         = var.blueprint_name
   blueprint_version      = var.blueprint_version
@@ -71,8 +55,8 @@ module cluster {
   node_max_count         = var.node_max_count
   node_min_count         = var.node_min_count
   vm_size                = var.vm_size
-  vm_username            = var.vm_username
-  vm_sshkey              = var.vm_sshkey
   node_resource_group    = var.node_resource_group
-  depends_on             = [ module.cloud_credentials, module.blueprint, module.cluster-overrides]
+  node_tags              = var.node_tags
+  node_labels            = var.node_labels
+  depends_on             = [ module.cloud_credentials, module.blueprint]
 }

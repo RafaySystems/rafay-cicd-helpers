@@ -120,3 +120,19 @@ variable "overrides_config" {
     override_values       = string
   }))
 }
+
+variable "rolearn" {
+  type = string
+}
+
+variable "externalid" {
+  type = string
+}
+
+variable "ng_name" {
+  type = string
+}
+
+variable "instance_type" {
+  type = string
+}

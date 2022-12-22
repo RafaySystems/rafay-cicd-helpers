@@ -45,7 +45,8 @@ base_blueprint         = "default"
 base_blueprint_version = "1.21.0"
 namespaces              = ["ingress-nginx", "istio-system", "datadog", "cert-manager"]
 infra_addons = {
-    "ingress-nginx" = {
+    "addon1" = {
+         name          = "ingress-nginx"
          namespace     = "ingress-nginx"
          addon_version = "v1.3.1"
          chart_name    = "ingress-nginx"
@@ -53,7 +54,8 @@ infra_addons = {
          repository    = "nginx-controller"
          file_path     = null
     }
-    "istio-base" = {
+    "addon2" = {
+         name          = "istio-base"
          namespace     = "istio-system"
          addon_version = "v1.15.0"
          chart_name    = "base"
@@ -62,7 +64,8 @@ infra_addons = {
          file_path     = null
 
     }
-     "istiod" = {
+     "addon3" = {
+         name          = "istiod"
          namespace     = "istio-system"
          addon_version = "v1.15.0"
          chart_name    = "istiod"
@@ -70,7 +73,8 @@ infra_addons = {
          repository    = "istio"
          file_path     = null
     }
-    "cert-manager" = {
+    "addon4" = {
+         name          = "cert-manager"
          namespace     = "cert-manager"
          addon_version = "v1.9.1"
          chart_name    = "cert-manager"

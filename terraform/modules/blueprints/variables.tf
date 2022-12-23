@@ -20,6 +20,7 @@ variable "base_blueprint_version" {
 
 variable "infra_addons" {
   type = map(object({
+    name          = string
     namespace     = string
     addon_version = string
     chart_name    = string

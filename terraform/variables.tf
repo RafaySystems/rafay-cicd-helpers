@@ -11,6 +11,7 @@ variable "public_repositories" {
 
 variable "infra_addons" {
   type = map(object({
+    name          = string
     namespace     = string
     addon_version = string
     chart_name    = string
@@ -119,4 +120,20 @@ variable "overrides_config" {
     override_addon_name   = string
     override_values       = string
   }))
+}
+
+variable "rolearn" {
+  type = string
+}
+
+variable "externalid" {
+  type = string
+}
+
+variable "ng_name" {
+  type = string
+}
+
+variable "instance_type" {
+  type = string
 }

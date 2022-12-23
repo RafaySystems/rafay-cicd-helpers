@@ -12,7 +12,7 @@ resource "rafay_blueprint" "blueprint" {
     dynamic "custom_addons" {
       for_each = var.infra_addons
       content {
-        name = custom_addons.key
+        name = custom_addons.value.name
         version = custom_addons.value.addon_version
       }
     }

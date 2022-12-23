@@ -3,7 +3,7 @@ resource "rafay_addon" "infra_addons" {
     for k, v in var.infra_addons : k => v if v.file_path == null
   }
   metadata {
-    name    = each.key
+    name    = each.value.name
     project = var.project
   }
   spec {
@@ -28,7 +28,7 @@ resource "rafay_addon" "infra_addons_with_custom_values" {
     for k, v in var.infra_addons : k => v if v.file_path != null
   }
   metadata {
-    name    = each.key
+    name    = each.value.name
     project = var.project
   }
   spec {

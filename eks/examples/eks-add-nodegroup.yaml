@@ -12,4 +12,8 @@ nodeGroups:
   - name: ng-1
     instanceType: t3.large
     desiredCapacity: 1
-    # no `tags` allowed here.
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        awsLoadBalancerController: true
+        imageBuilder: true

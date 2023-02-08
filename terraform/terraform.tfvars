@@ -2,7 +2,7 @@
 project               = "terraform"
 
 #Cloud Credentials specific varaibles
-cloud_credentials_name  = "cloud-credentials-hardik"
+cloud_credentials_name  = "cloud-credentials"
 #Specity Service prinicipal info below for AKS.
 subscription_id         = ""
 tenant_id               = ""

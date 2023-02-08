@@ -2,14 +2,14 @@
 project               = "terraform"
 
 #Cloud Credentials specific varaibles
-cloud_credentials_name  = "cloud-credentials-name"
+cloud_credentials_name  = "cloud-credentials"
 #Specity Service prinicipal info below for AKS.
 subscription_id         = ""
 tenant_id               = ""
 client_id               = ""
 client_secret           = ""
 # Specify Role ARN & externalid infor below for EKS.
-rolearn                 = "arn:aws:iam::679196758854:role/regression-eks-role"
+rolearn                 = "arn:aws:iam::<AWS_ACCOUNT_NUMBER>:role/<AWS_ROLE>"
 externalid              = "d547-098f-bdd4-a30b-c4bd"
 
 #Cluster specific varaibles
@@ -21,6 +21,9 @@ nodepool_name          =  "pool1"
 node_count             =  "2"
 node_max_count         =  "3"
 node_min_count         =  "1"
+
+#Cluster Sharing
+sharing = true
 # VM Size for AKS
 vm_size                =  "Standard_DS2_v2"
 ng_name                = "pool1"
@@ -42,7 +45,7 @@ node_labels = {
 blueprint_name         = "custom-blueprint"
 blueprint_version      = "v0"
 base_blueprint         = "default"
-base_blueprint_version = "1.21.0"
+base_blueprint_version = "1.22.0"
 namespaces              = ["ingress-nginx", "istio-system", "datadog", "cert-manager"]
 infra_addons = {
     "addon1" = {
@@ -125,5 +128,39 @@ overrides_config = {
         autoscaleMin: 2
         replicaCount: 2
       EOT
+    }
+}
+
+application_projects = {
+    project1 = {
+        name          = "<PROJECT_NAME1>"
+        description   = "team1"
+        # Define resource quotas(small/medium/large). Defined under modules/multi-tenancy/variables.tf
+        size          = "small"
+        groups         = {
+            group1 = {
+                name  = "<GROUP_NAME1_WK_ADMIN>"
+                roles = ["WORKSPACE_ADMIN"]
+            }
+            group2 = {
+                name = "GROUP_NAME1_WK_READ"
+                roles = ["WORKSPACE_READ_ONLY"]
+            }
+        }
+    }
+    project2 = {
+        name          = "PROJECT_NAME2"
+        description   = "team2"
+        size          = "large"
+        groups         = {
+            group1 = {
+                name  = "GROUP_NAME2_WK_ADMIN"
+                roles = ["WORKSPACE_ADMIN"]
+            }
+            group2 = {
+                name = "GROUP_NAME2_WK_READ"
+                roles = ["WORKSPACE_READ_ONLY"]
+            }
+        }
     }
 }

@@ -61,3 +61,15 @@ variable "node_tags" {
 variable "node_labels" {
   type = map
 }
+
+variable "application_projects" {
+  type = map(object({
+    name          = string
+    description   = string
+    size          = string
+    groups        = map(object({
+         name  = string
+         roles = list(string)
+        }))
+  }))
+}

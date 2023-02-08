@@ -10,6 +10,15 @@ resource "rafay_aks_cluster" "cluster" {
     blueprint     = var.blueprint_name
     blueprintversion = var.blueprint_version
     cloudprovider = var.cloud_credentials_name
+    sharing {
+      enabled = var.sharing ? true : false
+      dynamic "projects" {
+        for_each = var.application_projects
+        content {
+          name = projects.value.name
+        }
+      }
+    }
     cluster_config {
       apiversion = "rafay.io/v1alpha1"
       kind       = "aksClusterConfig"

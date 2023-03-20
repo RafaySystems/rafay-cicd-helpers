@@ -1,0 +1,48 @@
+kind: Cluster
+metadata:
+    name: eks-cluster-1
+    project: defaultproject
+spec:
+    blueprint: minimal
+    cloudprovider: dev-aws
+    cniparams:
+        customCniCrdSpec:
+            us-west-2a:
+                - subnet: subnet-aaa #100.x subnet for pods
+            us-west-2b:
+                - subnet: subnet-bbb #100.x subnet for pods
+    cniprovider: aws-cni
+    proxyconfig: {}
+    type: eks
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+nodeGroups:
+    - amiFamily: AmazonLinux2
+      desiredCapacity: 1
+      instanceType: t3a.xlarge
+      maxSize: 1
+      minSize: 1
+      name: infra
+      privateNetworking: true
+      version: "1.23"
+      volumeSize: 50
+      volumeType: gp3
+metadata:
+    name: eks-cluster-1
+    region: us-west-2
+    version: "1.23"
+iam:
+  withOIDC: true
+vpc:
+    clusterEndpoints:
+        privateAccess: true
+        publicAccess: false
+    nat:
+        gateway: Single
+    subnets:
+        private:
+            eks-subnet-2A:
+                id: subnet-xxx #10.x subnet for nodes
+            eks-subnet-2B:
+                id: subnet-yyy #10.x subnet for nodes

@@ -75,7 +75,14 @@ iam:
       name: autoscaler-service
       namespace: kube-system
   withOIDC: true
-
+identityMappings:
+  accounts:
+  - "679196758854"
+  arns:
+  - arn: arn:aws:iam::1234567890:user/user@email
+    group:
+    - system:masters
+    username: user
 nodeGroups:
 - amiFamily: AmazonLinux2
   desiredCapacity: 1

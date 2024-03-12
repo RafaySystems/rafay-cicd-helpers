@@ -8,6 +8,41 @@ spec:
     name: default
   cloudCredentials: dev-aws
   config:
+    addons:
+    - name: aws-ebs-csi-driver
+      version: latest
+    iam:
+      serviceAccounts:
+        - attachPolicyARNs:
+            - arn:aws:iam::1234567890:policy/policy
+          metadata:
+            name: demo
+            namespace: default
+        - attachPolicy:
+            Statement:
+              - Action:
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:DescribeSecret
+                Effect: Allow
+                Resource:
+                  - arn:aws:secretsmanager:us-west-2:1234567890:secret:demo
+            Version: "2012-10-17"
+          metadata:
+            name: demo1
+            namespace: test2
+        - attachRoleARN: arn:aws:iam::1234567890:role/role1
+          metadata:
+            name: demo2
+            namespace: default
+      withOIDC: true
+    identityMappings:
+      accounts:
+        - "1234567890"
+      arns:
+        - arn: arn:aws:iam::1234567890:user/user@email
+          group:
+            - system:masters
+          username: user
     managedNodeGroups:
     - amiFamily: AmazonLinux2
       desiredCapacity: 2

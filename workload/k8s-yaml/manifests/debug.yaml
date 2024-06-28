@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: praqma
+  template:
+    metadata:
+      labels:
+        app: praqma
+    spec:
+      containers:
+      - image: praqma/network-multitool:latest
+        imagePullPolicy: Always
+        name: debug
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+      restartPolicy: Always

@@ -1,0 +1,15 @@
+## Service paramaters
+##
+service:
+  ## Service type
+  ##
+  type: LoadBalancer
+  #type: NodePort
+  ## HTTP Port
+  ##
+  port: 80
+  ## HTTPS Port
+  ##
+  httpsPort: 443
+  ##
+replicaCount: 1

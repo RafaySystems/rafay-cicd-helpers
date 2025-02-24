@@ -14,7 +14,7 @@ service:
   ##
 replicaCount: 1
 
-tolerations:
-- key: "node/infra"
-  operator: "Exists"
-  effect: "NoSchedule"
+# tolerations:
+# - key: "node/infra"
+#   operator: "Exists"
+#   effect: "NoSchedule"
